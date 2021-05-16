@@ -7,18 +7,23 @@ import pickle
 from latex_2_img import latex_to_img
 
 characters = ["a",
-              "\sum",
+              "\sum ",
               "\\forall ",
               "\exists ",
-              "\int_{...}^{...}...",
+              "\int",
               "\mathbb{R}",
               "\in ",
               ",",
               "x",
               "\geq ",
               "<",
-              "\leq "]
+              "\leq ",
+              "=",
+              "i",
+              "0",
+              "1"]
 special = [1, 4]
+
 
 
 def print_character(i, bounds, upper, exit, y):
@@ -132,8 +137,8 @@ bounds = None
 
 try:
     init_window(screen, flush)
+    lastEvent = None
     while True:
-        lastEvent = None
         e = pygame.event.wait()
         if e.type == pygame.QUIT:
             raise StopIteration
@@ -169,6 +174,7 @@ try:
                 draw_line(screen, color, e.pos, last_pos)
             last_pos = e.pos
         if e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
+            print(lastEvent, e.type)
             if lastEvent == pygame.K_RETURN:
                 bounds = print_character(arg, bounds, True, True, (max_y+min_y)//2)
                 tex_str += temp_str
@@ -251,6 +257,5 @@ except StopIteration:
     pygame.quit()
     pass
 
-# %%
-clf.predict_proba([X_test[0]])
+
 # %%
