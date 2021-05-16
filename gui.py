@@ -8,7 +8,7 @@ from latex_2_img import latex_to_img
 
 characters = ["a",
               "\sum",
-              "\forall ",
+              "\\forall ",
               "\exists ",
               "\int_{...}^{...}...",
               "\mathbb{R}",
@@ -22,7 +22,9 @@ special = [1, 4]
 
 
 def print_character(i, bounds, upper, exit, y):
-    global temp_str, tex_str
+    global temp_str, tex_str, old_temp_str, old_tex_str
+    old_temp_str = temp_str
+    old_tex_str = tex_str
     if exit:
         if bounds is None:
             temp_str = characters[i]
@@ -52,7 +54,7 @@ def print_character(i, bounds, upper, exit, y):
                 else:
                     bounds["lower"] += characters[i]
             temp_str = characters[bounds["char"]] + "_{" +bounds["lower"] + "}^{" + bounds["upper"] + "}"
-            print(temp_str)
+            #print(temp_str)
             return bounds
         if i == 1:
             temp_str += characters[1]
@@ -67,7 +69,7 @@ window_width = 900
 window_height = 500
 draw_limit = window_width // 2
 title_size = window_height - window_width//2
-index_min_dist = window_height//10
+index_min_dist = window_height//5
 radius = 5
 
 model = pickle.load(open("models/sklearn_MLP.pkl", "rb"))
@@ -122,7 +124,9 @@ def init_window(screen, flush):
     
     
 tex_str = ""
+old_tex_str = ""
 temp_str = ""
+old_temp_str = ""
 flush = True
 bounds = None
 
@@ -168,6 +172,7 @@ try:
             if lastEvent == pygame.K_RETURN:
                 bounds = print_character(arg, bounds, True, True, (max_y+min_y)//2)
                 tex_str += temp_str
+                temp_str = ""
                 flush = True
                 pygameSurface = pilImageToSurface(latex_to_img(tex_str))
                 init_window(screen, flush=flush)
@@ -201,6 +206,7 @@ try:
                     else:
                         bounds = print_character(arg, bounds, True, True, (max_y+min_y)//2)
                         tex_str += temp_str
+                        temp_str = ""
                         pygameSurface = pilImageToSurface(latex_to_img(tex_str))
                         flush = True
                         init_window(screen, flush=flush)
@@ -212,7 +218,7 @@ try:
                     flush = False
                     temp_str = ""
                     bounds = print_character(arg, bounds, True, False, (max_y+min_y)//2)
-                    print("temp_str :", temp_str)
+                    #print("temp_str :", temp_str)
                     pygameSurface = pilImageToSurface(latex_to_img(tex_str+temp_str))
                     init_window(screen, flush=flush)
                     screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
@@ -224,7 +230,20 @@ try:
                     screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
                     pygame.display.flip()
                     last_y = (max_y+min_y)//2
-
+        elif e.type == pygame.KEYDOWN and e.key == pygame.K_BACKSPACE:
+            if bounds is not None and arg not in special:
+                temp_str = old_temp_str
+                pygameSurface = pilImageToSurface(latex_to_img(temp_str))
+                init_window(screen, flush=flush)
+                screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+                pygame.display.flip()
+            elif bounds is not None:
+                temp_str = ""
+                tex_str = old_tex_str
+                pygameSurface = pilImageToSurface(latex_to_img(tex_str))
+                init_window(screen, flush=flush)
+                screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+                pygame.display.flip()       
         pygame.display.flip()
 
 except StopIteration:
