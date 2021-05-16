@@ -7,42 +7,57 @@ import pickle
 from latex_2_img import latex_to_img
 
 characters = ["a",
-              "\sum_"+"{...}"+"^"+"{...}"+"...",
-              "\forall",
-              "\exists",
+              "\sum",
+              "\forall ",
+              "\exists ",
               "\int_{...}^{...}...",
               "\mathbb{R}",
-              "\in",
+              "\in ",
               ",",
               "x",
-              ">=",
+              "\geq ",
               "<",
-              "<="]
+              "\leq "]
 special = [1, 4]
 
 
-def print_character(real_str, temp_str, i, bounds, upper, exit):
+def print_character(i, bounds, upper, exit, y):
+    global temp_str, tex_str
     if exit:
         if bounds is None:
-            if bounds["upper"] == "" and bounds["lower"] == "":
-                
+            temp_str = characters[i]
+        elif bounds["upper"] == "..." and bounds["lower"] != "...":
+            temp_str = characters[bounds["char"]] + "_{" +bounds["lower"] + "}"
+        elif bounds["lower"] == "..." and bounds["upper"] != "...":
+            temp_str = characters[bounds["char"]] + "^{" +bounds["upper"] + "}"
+        else:
+             temp_str = characters[bounds["char"]] + "_{" +bounds["lower"] + "}^{" + bounds["upper"] + "}"
+            
             
     if not i in special and bounds is None:
-        real_str += characters[i]
-        temp_str += characters[i]
+        tex_str += characters[i]
+        temp_str = ""
         return None
         
     else:
         if bounds is not None:
             if upper:
-                bounds["upper"] +=characters[i]
-                if temp_str[-2] == "...": #dans le cas ou c'est le premier caractère de la borne
-                    temp_str[-7:-4] = bounds["upper"]
+                if bounds["upper"] == "...":
+                    bounds["upper"] = characters[i]
+                else:
+                    bounds["upper"] += characters[i]
             else:
-                bounds["lower"] += characters[i]
+                if bounds["lower"] == "...":
+                    bounds["lower"] = characters[i]
+                else:
+                    bounds["lower"] += characters[i]
+            temp_str = characters[bounds["char"]] + "_{" +bounds["lower"] + "}^{" + bounds["upper"] + "}"
+            print(temp_str)
+            return bounds
         if i == 1:
             temp_str += characters[1]
-            bounds = {"char": i,"upper": "", "lower": ""}
+            bounds = {"char": i,"upper": "...", "lower": "...", "y" : y}
+            temp_str = characters[bounds["char"]] + "_{" +bounds["lower"] + "}^{" + bounds["upper"] + "}"
             return bounds
             
             
@@ -91,7 +106,6 @@ def init_window(screen, flush):
     global min_y, max_y, min_x, max_x
     if flush:
         screen.fill("white")
-    else:
         
     pygame.draw.line(screen, "black", (draw_limit, 0), (draw_limit, window_height), width=3)
     pygame.draw.line(screen, "black", (0, title_size), (window_width, title_size), width=3)
@@ -107,8 +121,8 @@ def init_window(screen, flush):
     max_x = -np.inf
     
     
-tex_str = []
-temp_str = []
+tex_str = ""
+temp_str = ""
 flush = True
 bounds = None
 
@@ -152,10 +166,13 @@ try:
             last_pos = e.pos
         if e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
             if lastEvent == pygame.K_RETURN:
+                bounds = print_character(arg, bounds, True, True, (max_y+min_y)//2)
+                tex_str += temp_str
                 flush = True
+                pygameSurface = pilImageToSurface(latex_to_img(tex_str))
                 init_window(screen, flush=flush)
-                if arg ==1:
-                    tex_str = tex_str[:-16] + " "
+                screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+
                     
             else:
                 lastEvent = pygame.K_RETURN
@@ -163,35 +180,50 @@ try:
                 img = 255-pygame.surfarray.array3d(screen)[min_x-radius:max_x+radius, min_y-radius:max_y+radius].swapaxes(0,1)
                 transformed = padding(scaling([img]))
                 arg = np.argmax(model.predict_proba(transformed.reshape((1,-1))))
-                tex = characters[arg]
-                tex_str += tex
-                if arg in special or bounds is not None:
+                
+                print(bounds)
+                print(arg, special)
+                if bounds is not None:
                     flush = False
-                    if (max_y+min_y)//2) > y + index_min_dist: #indice du bas
-                        bounds = print_character(tex_str, temp_str, arg, bounds, False, False)
-                        pygameSurface = pilImageToSurface(latex_to_img(''.join(temp_str)))
+                    print((max_y+min_y)//2, bounds["y"], index_min_dist )
+                    if (max_y+min_y)//2 > bounds["y"] + index_min_dist: #indice du bas
+                        bounds = print_character(arg, bounds, False, False, (max_y+min_y)//2)
+                        pygameSurface = pilImageToSurface(latex_to_img(tex_str+temp_str))
                         init_window(screen, flush=flush)
                         screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
                         pygame.display.flip()
-                    elif (max_y+min_y)//2) < y - index_min_dist: #indice du haut
-                        bounds = print_character(tex_str temp_str, arg, bounds, True, False)
-                        pygameSurface = pilImageToSurface(latex_to_img(''.join(temp_str)))
+                    elif (max_y+min_y)//2 < bounds["y"] - index_min_dist: #indice du haut
+                        bounds = print_character(arg, bounds, True, False, (max_y+min_y)//2)
+                        pygameSurface = pilImageToSurface(latex_to_img(tex_str+temp_str))
                         init_window(screen, flush=flush)
                         screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
                         pygame.display.flip()
                     else:
-                        bounds = print_character(tex_str, temp_str, arg, bounds, True)
-                        pygameSurface = pilImageToSurface(latex_to_img(''.join(text_str)))
+                        bounds = print_character(arg, bounds, True, True, (max_y+min_y)//2)
+                        tex_str += temp_str
+                        pygameSurface = pilImageToSurface(latex_to_img(tex_str))
                         flush = True
                         init_window(screen, flush=flush)
                         screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
                         pygame.display.flip()
-
-                pygameSurface = pilImageToSurface(latex_to_img(''.join(tex_str)))
-                init_window(screen, flush=flush)
-                screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
-                pygame.display.flip()
-                last_y = (max_y+min_y)//2)
+                
+                elif arg in special:
+                    bounds = None
+                    flush = False
+                    temp_str = ""
+                    bounds = print_character(arg, bounds, True, False, (max_y+min_y)//2)
+                    print("temp_str :", temp_str)
+                    pygameSurface = pilImageToSurface(latex_to_img(tex_str+temp_str))
+                    init_window(screen, flush=flush)
+                    screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+                    pygame.display.flip()
+                else:
+                    bounds = print_character(arg, bounds, True, False, (max_y+min_y)//2)
+                    pygameSurface = pilImageToSurface(latex_to_img(tex_str))
+                    init_window(screen, flush=flush)
+                    screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+                    pygame.display.flip()
+                    last_y = (max_y+min_y)//2
 
         pygame.display.flip()
 
