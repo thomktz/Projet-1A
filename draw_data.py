@@ -57,8 +57,11 @@ def update_db(symbol, i):
     global labels, data
     labels = np.concatenate((labels, [i]), axis = 0)
     data = np.concatenate((data, symbol), axis = 0)
-    print(data[-2:])
-    print(labels[-2:])
+    idx = np.random.permutation(len(data))
+    x,y = data[idx], classes[idx]
+    np.save("data/data.npy", x)
+    np.save("data/labels.npy", y)
+    
 
     
 
