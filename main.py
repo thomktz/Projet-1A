@@ -60,16 +60,6 @@ max_y = -np.inf
 min_x = np.inf
 max_x = -np.inf
 
-model = pickle.load(open("models/sklearn_MLP.pkl", "rb"))
-
-pygame.init()
-screen = pygame.display.set_mode((window_width,window_height))
-screen.fill("white")
-pygame.display.flip()
-draw_on = False
-color = "black"
-pygame.font.init()
-myfont = pygame.font.SysFont('Garamond', 30)
 
 
 def pilImageToSurface(pilImage):
@@ -142,52 +132,64 @@ def draw_latex(screen, symbols):
     pygame.display.flip()
     reset_extremums()
 
+if __name__ == '__main__':
 
-continuer = True
+    model = pickle.load(open("models/sklearn_MLP.pkl", "rb"))
 
-symbols = []
+    pygame.init()
+    screen = pygame.display.set_mode((window_width,window_height))
+    screen.fill("white")
+    pygame.display.flip()
+    draw_on = False
+    color = "black"
+    pygame.font.init()
+    myfont = pygame.font.SysFont('Garamond', 30)
 
-try:
-    init_window(screen, True)
-    while continuer:
-        e = pygame.event.wait()
-        if e.type == pygame.QUIT:
-            raise StopIteration
-        elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
-            update_extremums(e)
-            pygame.draw.circle(screen, color, e.pos, radius)
-            pygame.display.flip()
-            draw_on = True
-        elif e.type == pygame.MOUSEBUTTONUP:
-            draw_on = False
-        elif e.type == pygame.MOUSEMOTION:
-            if draw_on and e.pos[0] < draw_limit and e.pos[1] > title_size:
+
+    continuer = True
+    symbols = []
+
+    try:
+        init_window(screen, True)
+        while continuer:
+            e = pygame.event.wait()
+            if e.type == pygame.QUIT:
+                raise StopIteration
+            elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
                 update_extremums(e)
                 pygame.draw.circle(screen, color, e.pos, radius)
-                draw_line(screen, color, e.pos, last_pos)
                 pygame.display.flip()
-            last_pos = e.pos
-        elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
-            arg = predict_screen(screen)
-            detected = Symbol(arg, None, (max_y+min_y)//2)
-            if symbols != [] and detected.y < symbols[-1].y - index_min_dist: # detected est un exposant de symbols[-1]
-                detected.parent = symbols[-1]
-                detected.height = 1
-                symbols[-1].exposants.append(detected)
+                draw_on = True
+            elif e.type == pygame.MOUSEBUTTONUP:
+                draw_on = False
+            elif e.type == pygame.MOUSEMOTION:
+                if draw_on and e.pos[0] < draw_limit and e.pos[1] > title_size:
+                    update_extremums(e)
+                    pygame.draw.circle(screen, color, e.pos, radius)
+                    draw_line(screen, color, e.pos, last_pos)
+                    pygame.display.flip()
+                last_pos = e.pos
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
+                arg = predict_screen(screen)
+                detected = Symbol(arg, None, (max_y+min_y)//2)
+                if symbols != [] and detected.y < symbols[-1].y - index_min_dist: # detected est un exposant de symbols[-1]
+                    detected.parent = symbols[-1]
+                    detected.height = 1
+                    symbols[-1].exposants.append(detected)
+                                
+                elif symbols != [] and detected.y > symbols[-1].y + index_min_dist: # detected est un indice de symbols[-1]
+                    detected.parent = symbols[-1]
+                    detected.height = -1
+                    symbols[-1].indices.append(detected)
                             
-            elif symbols != [] and detected.y > symbols[-1].y + index_min_dist: # detected est un indice de symbols[-1]
-                detected.parent = symbols[-1]
-                detected.height = -1
-                symbols[-1].indices.append(detected)
-                        
-            else: #detected est un caractère normal
-                detected.height = 0
-                symbols.append(detected)
-                move_drawing(screen)
-                
-            draw_latex(screen, symbols)
-except StopIteration:
-    pygame.display.quit()
-    pygame.quit()
-    pass
-# %%
+                else: #detected est un caractère normal
+                    detected.height = 0
+                    symbols.append(detected)
+                    move_drawing(screen)
+                    
+                draw_latex(screen, symbols)
+    except StopIteration:
+        pygame.display.quit()
+        pygame.quit()
+        pass
+    # %%
