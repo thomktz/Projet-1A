@@ -53,14 +53,15 @@ def extract_symbol(screen):
     transformed = padding(scaling([array]))
     return transformed
 
-def update_db(symbol, i):
+def update_db(symbol, i, save = True):
     global labels, data
     labels = np.concatenate((labels, [i]), axis = 0)
     data = np.concatenate((data, symbol), axis = 0)
     idx = np.random.permutation(len(data))
-    x,y = data[idx], classes[idx]
-    np.save("data/data.npy", x)
-    np.save("data/labels.npy", y)
+    x,y = data[idx], labels[idx]
+    if save:
+        np.save("data/data.npy", x)
+        np.save("data/labels.npy", y)
     
 
     
@@ -118,7 +119,9 @@ if __name__ == '__main__':
                     draw_latex(screen, [Symbol(rd,0,0,None)])
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_BACKSPACE:
                 reset_extremums()
-                init_window_draw()
+                init_window_draw(screen)
+                rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
+                draw_latex(screen, [Symbol(rd,0,0,None)])
     except StopIteration:
         pygame.display.quit()
         pygame.quit()

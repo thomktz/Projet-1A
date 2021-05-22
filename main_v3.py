@@ -11,13 +11,13 @@ characters = ["a",
               "\sum ",
               "\\forall ",
               "\exists ",
-              "\int",
+              "\int ",
               "\mathbb{R}",
               "\in ",
               ",",
               "x",
               "\geq ",
-              "<",
+              " < ",
               "\leq ",
               "=",
               "i",
@@ -58,7 +58,7 @@ title_size = window_height - window_width//2
 index_min_dist = window_height//10
 radius = 5
 
-time_threshold = 1
+time_threshold = 0.7
 distance_threshold = window_height//10 #entre 2 squares
 
 min_y = np.inf
@@ -153,7 +153,7 @@ def merge_squares(s1, s2):
     return [min(min_y1, min_y2), max(max_y1, max_y2), min(min_x1, min_x2), max(max_x1, max_x2)]
     
 
-def update_symbols(screen, detected):
+def update_symbols(screen, detected, latex = True):
     if symbols != [] and detected.y < symbols[-1].y - index_min_dist: # detected est un exposant de symbols[-1]
         detected.parent = symbols[-1]
         detected.height = 1
@@ -166,15 +166,22 @@ def update_symbols(screen, detected):
                 
     else: #detected est un caractère normal
         detected.height = 0
+        #print("hey")
         symbols.append(detected)
         move_drawing(screen)
-        
-    draw_latex(screen, symbols)
+    if latex:
+        print("Drawing...")
+        draw_latex(screen, symbols)
+    else:
+        print("".join(list_str(symbols)))
 
 if __name__ == '__main__':
 
     model = pickle.load(open("models/sklearn_MLP.pkl", "rb"))
 
+    
+    
+    latex = True
     pygame.init()
     screen = pygame.display.set_mode((window_width,window_height))
     screen.fill("white")
@@ -195,18 +202,21 @@ if __name__ == '__main__':
             #print(time.time()-end_time)
             if has_drawn and time.time() - end_time > time_threshold:
                 has_drawn = False
-                print(time.time() - end_time, time_threshold)
-                arg = predict_screen(screen, print_pred = True)
+                #print(time.time() - end_time, time_threshold)
+                arg = predict_screen(screen, print_pred = False)
                 detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
-                print(detected.base_character)
+                update_symbols(screen, detected, latex = latex)
+                #print(detected.base_character)
+                
             e = pygame.event.wait()
             if e.type == pygame.QUIT:
                 raise StopIteration
             elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
                 if  (has_drawn or draw_on)and distance_from_rect([min_y, max_y, min_x, max_x], e.pos)> distance_threshold:
-                    arg = predict_screen(screen, print_pred = True)
+                    print("distance threshold")
+                    arg = predict_screen(screen, print_pred = False)
                     detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
-                    print(detected.base_character)
+                    #print(detected.base_character)
                 else:
                     has_drawn = False
                     update_extremums(e)
@@ -225,10 +235,6 @@ if __name__ == '__main__':
                     draw_line(screen, color, e.pos, last_pos)
                     pygame.display.flip()
                 last_pos = e.pos
-            elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
-                arg = predict_screen(screen)
-                detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
-                update_symbols(screen, detected)
     except StopIteration:
         pygame.display.quit()
         pygame.quit()
