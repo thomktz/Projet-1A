@@ -28,13 +28,15 @@ def list_str(list):
     return [str(e) for e in list]
 
 class Symbol():
-    def __init__(self, i, height,y, parent = None):
+    def __init__(self, i, height,rect, parent = None):
+        miny, maxy, minx, maxx = rect
         self.parent = parent
         self.height = height         #-1 : indice, 0 : normal, 1 : exposant
-        self.y = y
+        self.y = (miny+maxy)//2
         self.base_character = characters[i]
         self.indices = []
         self.exposants = []
+        self.rect = rect
     
     def __str__(self):
         if len(self.indices) > 0:
@@ -70,7 +72,7 @@ def distance_from_rect(rect, p):
     dx = max(min_x - x, 0, x - max_x)
     dy = max(min_y - y, 0, y - max_y)
     return np.sqrt(dx*dx + dy*dy)
-}
+
 
 def pilImageToSurface(pilImage):
     return pygame.image.fromstring(
@@ -195,15 +197,15 @@ if __name__ == '__main__':
                 has_drawn = False
                 print(time.time() - end_time, time_threshold)
                 arg = predict_screen(screen, print_pred = True)
-                detected = Symbol(arg, None, (max_y+min_y)//2)
+                detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
                 print(detected.base_character)
             e = pygame.event.wait()
             if e.type == pygame.QUIT:
                 raise StopIteration
             elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
-                if distance_from_rect([min_y, max_y, min_x, max_x], e.pos)> distance_threshold:
+                if  (has_drawn or draw_on)and distance_from_rect([min_y, max_y, min_x, max_x], e.pos)> distance_threshold:
                     arg = predict_screen(screen, print_pred = True)
-                    detected = Symbol(arg, None, (max_y+min_y)//2)
+                    detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
                     print(detected.base_character)
                 else:
                     has_drawn = False
@@ -225,7 +227,7 @@ if __name__ == '__main__':
                 last_pos = e.pos
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_RETURN:
                 arg = predict_screen(screen)
-                detected = Symbol(arg, None, (max_y+min_y)//2)
+                detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
                 update_symbols(screen, detected)
     except StopIteration:
         pygame.display.quit()
