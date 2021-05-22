@@ -170,10 +170,17 @@ def update_symbols(screen, detected, latex = True):
         symbols.append(detected)
         move_drawing(screen)
     if latex:
-        print("Drawing...")
+        #print("Drawing...")
+        #print("".join(list_str(symbols)))
         draw_latex(screen, symbols)
     else:
-        print("".join(list_str(symbols)))
+        out="".join(list_str(symbols))
+        textsurface = myfont.render(out, True, "black")
+        tx, ty = myfont.size(out)
+        pygame.draw.rect(screen, "white", pygame.Rect(draw_limit+3, title_size+3, window_width-draw_limit, window_height-title_size))
+        screen.blit(textsurface, (3*window_width//4-tx//2, window_height//2-ty//2))
+        pygame.display.flip()
+        reset_extremums()
 
 if __name__ == '__main__':
 
@@ -181,7 +188,7 @@ if __name__ == '__main__':
 
     
     
-    latex = True
+    latex = False
     pygame.init()
     screen = pygame.display.set_mode((window_width,window_height))
     screen.fill("white")
