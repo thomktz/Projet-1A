@@ -132,6 +132,12 @@ def draw_latex(screen, symbols):
     pygame.display.flip()
     reset_extremums()
 
+def merge_squares(s1, s2):
+    min_y1, max_y1, min_x1, max_x1 = s1
+    min_y2, max_y2, min_x2, max_x2 = s2
+    return [min(min_y1, min_y2), max(max_y1, max_y2), min(min_x1, min_x2), max(max_x1, max_x2)]
+    
+
 if __name__ == '__main__':
 
     model = pickle.load(open("models/sklearn_MLP.pkl", "rb"))
@@ -145,10 +151,9 @@ if __name__ == '__main__':
     pygame.font.init()
     myfont = pygame.font.SysFont('Garamond', 30)
 
-
     continuer = True
     symbols = []
-
+    squares = []
     try:
         init_window(screen, True)
         while continuer:
