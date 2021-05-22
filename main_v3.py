@@ -37,6 +37,7 @@ class Symbol():
         self.indices = []
         self.exposants = []
         self.rect = rect
+        self.last_addition = None
     
     def __str__(self):
         if len(self.indices) > 0:
@@ -158,11 +159,13 @@ def update_symbols(screen, detected, latex = True):
         detected.parent = symbols[-1]
         detected.height = 1
         symbols[-1].exposants.append(detected)
+        symbols[-1].last_addition = 1
                     
     elif symbols != [] and detected.y > symbols[-1].y + index_min_dist: # detected est un indice de symbols[-1]
         detected.parent = symbols[-1]
         detected.height = -1
         symbols[-1].indices.append(detected)
+        symbols[-1].last_addition = -1
                 
     else: #detected est un caractère normal
         detected.height = 0
@@ -181,6 +184,27 @@ def update_symbols(screen, detected, latex = True):
         screen.blit(textsurface, (3*window_width//4-tx//2, window_height//2-ty//2))
         pygame.display.flip()
         reset_extremums()
+        
+def delete_last_symbol(screen, latex):
+    global symbols
+    if symbols[-1].last_addition == 1:
+        symbols[-1].exposants.pop(-1)
+    elif symbols[-1].last_addition == -1:
+        symbols[-1].indices.pop(-1)
+    else:
+        symbols.pop(-1)
+    if latex:
+        draw_latex(screen, symbols)
+    else:
+        out="".join(list_str(symbols))
+        textsurface = myfont.render(out, True, "black")
+        tx, ty = myfont.size(out)
+        pygame.draw.rect(screen, "white", pygame.Rect(0, title_size+3, window_width-draw_limit-3, window_height-title_size))
+        pygame.draw.rect(screen, "white", pygame.Rect(draw_limit+3, title_size+3, window_width-draw_limit, window_height-title_size))
+        screen.blit(textsurface, (3*window_width//4-tx//2, window_height//2-ty//2))
+        pygame.display.flip()
+        reset_extremums()
+        
 
 if __name__ == '__main__':
 
@@ -242,6 +266,9 @@ if __name__ == '__main__':
                     draw_line(screen, color, e.pos, last_pos)
                     pygame.display.flip()
                 last_pos = e.pos
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_BACKSPACE:
+                delete_last_symbol(screen, latex)
+                
     except StopIteration:
         pygame.display.quit()
         pygame.quit()
