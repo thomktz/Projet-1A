@@ -22,6 +22,7 @@ characters = ["a",
               "i",
               "0",
               "1"]
+
 special = [1, 4]
 
 

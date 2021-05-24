@@ -27,6 +27,9 @@ def scaling(imgs):
     return out
 
 def padding(imgs):
+    """
+    (x,32) or (32,x) to (32,32), with x <= 32
+    """
     out = []
     for i in range(len(imgs)):
         out.append(np.zeros((32,32)))

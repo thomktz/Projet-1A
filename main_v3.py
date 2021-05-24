@@ -17,12 +17,10 @@ characters = ["a",
               ",",
               "x",
               "\geq ",
-              " < ",
               "\leq ",
               "=",
               "i",
-              "0",
-              "1"]
+              "n"]
 
 def list_str(list):
     return [str(e) for e in list]

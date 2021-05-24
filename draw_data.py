@@ -1,11 +1,18 @@
 # %%
-from main import *
+from main_v3 import *
 import random
+
+# Si premier lancement :
+# data = np.empty((0,32,32))
+# labels = np.empty((0))
+
 
 data = np.load("data/data.npy")
 labels = np.load("data/labels.npy")
 
-indexes_to_draw = [13,14,15]
+
+#indexes_to_draw = [i for i in range(14)]
+indexes_to_draw = [0,13]
 characters_to_draw = [characters[i] for i in indexes_to_draw]
 
 min_y = np.inf
@@ -18,11 +25,11 @@ def update_extremums(e):
     x, y = e.pos
     if x > max_x:
         max_x = x
-    elif x < min_x:
+    if x < min_x:
         min_x = x
     if y > max_y:
         max_y = y
-    elif y < min_y:
+    if y < min_y:
         min_y = y
 
 def reset_extremums():
@@ -48,8 +55,10 @@ def init_window_draw(screen):
 
 def extract_symbol(screen):
     global min_y, max_y, min_x, max_x
-    print(min_y, max_y, min_x, max_x, radius)
+    #print(min_y, max_y, min_x, max_x, radius)
     array = 255-pygame.surfarray.array3d(screen)[min_x-radius:max_x+radius, min_y-radius:max_y+radius].swapaxes(0,1)
+    #plt.imshow(array)
+    #plt.show()
     transformed = padding(scaling([array]))
     return transformed
 
@@ -62,8 +71,6 @@ def update_db(symbol, i, save = True):
     if save:
         np.save("data/data.npy", x)
         np.save("data/labels.npy", y)
-    
-
     
 
 if __name__ == '__main__':
@@ -97,6 +104,7 @@ if __name__ == '__main__':
                 pygame.display.flip()
                 draw_on = True
             elif e.type == pygame.MOUSEBUTTONUP:
+                update_extremums(e)
                 draw_on = False
             elif e.type == pygame.MOUSEMOTION:
                 if draw_on and e.pos[0] < draw_limit and e.pos[1] > title_size:
@@ -110,18 +118,19 @@ if __name__ == '__main__':
                     init_window_draw(screen)
                     nb_added =+1
                     rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
-                    draw_latex(screen, [Symbol(rd,0,0,None)])
+                    draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)])
                 else:
+                    print(nb_added)
                     nb_added =+1
                     update_db(extract_symbol(screen), rd)
                     init_window_draw(screen)
                     rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
-                    draw_latex(screen, [Symbol(rd,0,0,None)])
+                    draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)])
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_BACKSPACE:
                 reset_extremums()
                 init_window_draw(screen)
                 rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
-                draw_latex(screen, [Symbol(rd,0,0,None)])
+                draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)])
     except StopIteration:
         pygame.display.quit()
         pygame.quit()
