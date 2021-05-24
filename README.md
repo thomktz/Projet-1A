@@ -29,9 +29,9 @@ On va donc pour cela implémenter la méthode *NMS* pour `Non Maximum Suppressio
 
 Entrée : 
 
-Ensemble des boxes fournies par la *Selective Search* (liste B) et chacune possède un "score" /
-         Liste F vide /
-         Seuil N
+Ensemble des boxes fournies par la *Selective Search* (liste B) et chacune possède un "score"  
+         Liste F vide  
+         Seuil N  
          
 Principe : 
 - La boxe de score le plus élevé est ajoutée dans la liste F et est prise comme boxe de référence.
