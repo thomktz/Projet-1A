@@ -210,7 +210,7 @@ if __name__ == '__main__':
 
     
     
-    latex = False
+    latex = True
     pygame.init()
     screen = pygame.display.set_mode((window_width,window_height))
     screen.fill("white")
