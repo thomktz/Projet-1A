@@ -34,8 +34,8 @@ Entrée :
 - Seuil N  
          
 Principe : 
-- La boxe de score le plus élevé est ajoutée dans la liste F et est prise comme boxe de référence.
-- On calcule le rapport *IoU* (*Intersection over Union*) de cette boxe avec toutes les autres boxes.
+- La box de score le plus élevé est ajoutée dans la liste F et est prise comme boxe de référence.
+- On calcule le rapport *IoU* (*Intersection over Union*) de cette box avec toutes les autres boxes.
 - Toutes celles dont la valeur *IoU* dépasse le seuil fixé sont retirées de la liste B.
 - Répéter jusqu'à ce que la liste B soit vide.
 
