@@ -41,12 +41,8 @@ Principe :
 
 On obtient alors en sortie :
 
-> seuil de 0.1
+![batch4](https://github.com/PierreRlld/pORJ/blob/main/r%C3%A9sultat.png)
 
-![batch4](https://github.com/PierreRlld/pORJ/blob/main/seuil%200.01%20%C3%A9pais.png)
 
->seuil de 0.05
-
-![batch5](https://github.com/PierreRlld/pORJ/blob/main/seuil%200.05%20%C3%A9pais.png)
 
 
