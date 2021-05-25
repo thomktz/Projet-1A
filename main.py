@@ -219,7 +219,7 @@ def delete_last_symbol(screen, latex):
 
 if __name__ == '__main__':
 
-    recording = True
+    recording = False
     frames = 0
     latex = True
     model_type = "pytorch"
