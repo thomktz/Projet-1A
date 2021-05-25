@@ -205,7 +205,7 @@ Pour génerer des images LaTeX, on utilise `matplotlib`. Toutes les autres alter
 
 ### Test unitaire
 
-Nous avons réalisé un test unitaire sur l'appel de `str` sur un objet de la classe `Symbol`
+Nous avons réalisé un [test unitaire](test_unitaire.py) sur l'appel de `str` sur un objet de la classe `Symbol`
 
 ```python
 class TestSymbol(unittest.TestCase):
