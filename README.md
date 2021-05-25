@@ -155,6 +155,7 @@ Enfin, pour le problème numéro 1, deux critères ont été envisagés
 On utilise alors uniquement le premier.
 
 ![main](https://user-images.githubusercontent.com/60552083/119516823-5c2ad180-bd77-11eb-9172-6e9a1bd23307.gif)
+>La vidéo est un peu trompeuse. Les frames sont enregistrées à chaque tour de boucle et donc pas pendant le chargement. Il y a un temps de chargement plus grand entre la fin du dessin et l'apparition du code LaTeX. Il y a plus de détails sur cela dans les remarques finales.
 
 On peut appuyer sur *Retour* pour effacer le dernier symbole, qu'il soit indice, exposant ou normal.
 
