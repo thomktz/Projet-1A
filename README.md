@@ -171,6 +171,6 @@ Alors nous avons créé un programme qui fait l'inverse de `main.py`, c'est à d
 
 ### Le problème du temps
 
-Il y a en réalité un temps assez long entre la fin du dessin, de l'ordre de *2 à 3s*. Il y a les *0.7s* d'attente pour savoir si c'est bien la fin du caractère, puis *2s* d'attente. L'entiereté de ce temps (entre *98%* et *99%*) est passée à compiler et à afficher le code LaTeX, car la detection dure en moyenne *0.02s*
+Il y a en réalité un temps assez long entre la fin du dessin et l'affichage LaTeX, de l'ordre de *2 à 3s*. Il y a les *0.7s* d'attente pour savoir si c'est bien la fin du caractère, puis *2s* d'attente. L'entiereté de ce temps (entre *98%* et *99%*) est passée à compiler et à afficher le code LaTeX, car la detection dure en moyenne *0.02s*
 
 Pour génerer des images LaTeX, on utilise `matplotlib`. Toutes les autres alternatives qui ont été essayées n'ont pas marché sur nos machines, malgré plusieurs installations de LaTeX, beaucoup de packages python et de documentations obscures. Vu le nombre limité de caractères, il serait probablement plus rapide de recoder un LaTeX simpliste en python qui peut lire du code et sortir une image.
