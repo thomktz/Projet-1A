@@ -77,7 +77,7 @@ if y > max_y:
 if y < min_y:
     min_y = y
 ```
-On ne peut pas remplacer un `if` par un `elif` pour gagner en rapidité car un trait monotone en x ou en y laissera un min ou un max à sa valeur initiale, qui est ±∞  
+On ne peut pas remplacer un `if` par un `elif` pour gagner en rapidité car un trait strictement monotone en x ou en y laissera un min ou un max à sa valeur initiale, qui est ±∞  
 En animation, et en prenant compte de la taille du trait :
 
 ![bounding_boxes](https://user-images.githubusercontent.com/60552083/119487647-f2e89580-bd59-11eb-9da9-c8b5d6dba21d.gif)
