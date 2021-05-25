@@ -156,7 +156,7 @@ def move_drawing(screen, margin = radius):
     pygame.display.flip()
 
 def draw_latex(screen, symbols):
-    print("Starting rendering", time.time())
+    #print("Starting rendering", time.time())
     if symbols != []:
         string = "".join(list_str(symbols))
         pygameSurface = pilImageToSurface(latex_to_img(string))
@@ -167,7 +167,7 @@ def draw_latex(screen, symbols):
         pygame.draw.rect(screen, "white", pygame.Rect(draw_limit+3, title_size+3, window_width-draw_limit, window_height-title_size))
         pygame.display.flip()
         reset_extremums()
-    print("Done", time.time())
+    #print("Done", time.time())
 
 def merge_squares(s1, s2):
     """
@@ -258,12 +258,12 @@ if __name__ == '__main__':
             if has_drawn and time.time() - end_time > time_threshold:
                 has_drawn = False
                 #print(time.time() - end_time, time_threshold)
-                print("Predicting screen ")
+                #print("Predicting screen ")
                 t1 = time.time()
                 arg = predict_screen(screen, predict, debug = False)
-                print("Done", time.time()-t1)
+                #print("Done", time.time()-t1)
                 detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
-                print("Updating", time.time())
+                #print("Updating", time.time())
                 update_symbols(screen, detected, latex = latex)
                 #print(detected.base_character)
             
