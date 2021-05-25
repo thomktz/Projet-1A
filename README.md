@@ -5,7 +5,9 @@ Projet informatique de 1ère année de
 Thomas KIENTZ  
 Pierre ROUILLARD  
 
-![LOGO-ENSAE (1)](https://user-images.githubusercontent.com/60552083/119563408-cbb8b500-bda7-11eb-8b11-c94cd89e7226.png width = 500)
+
+<img src="https://user-images.githubusercontent.com/60552083/119563408-cbb8b500-bda7-11eb-8b11-c94cd89e7226.png" alt="alt text" width="500" height="500">
+
 
 # L'idée
 
