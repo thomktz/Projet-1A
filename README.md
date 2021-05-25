@@ -13,7 +13,7 @@ Il a fallu trouver un Dataset qui n'avait pas trop de classes (pour du *proof of
 
 ![batch_0](https://user-images.githubusercontent.com/60552083/119355651-d25f0380-bca5-11eb-9d8d-2c9ee0dec7c0.jpg)
 
-Puis, après traitement, les images sont mises dans un fichier `data.npy` et les labels dans `labels.npy`
+Puis, après [traitement](https://github.com/thomktz/Projet-1A/blob/fb38f0ca1e560b4abc0863358de80afc5ff0b68e/decoupeur.py), les images sont mises dans un fichier `data.npy` et les [labels](https://github.com/thomktz/Projet-1A/blob/7c8f524801961602133cd6ef50379e25843ad5c2/create_labels.py) dans `labels.npy`
 
 ![batch_1](https://user-images.githubusercontent.com/60552083/119355798-f91d3a00-bca5-11eb-9807-62a75cd988cc.PNG)
 
@@ -29,7 +29,7 @@ Le *MLP* (ou *Multi-Layer Perceptron*) est le réseau neuronal le plus classique
 
 Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet d'exploiter la structure, i.e. quels points (pixels, ici) sont proches de quels autres dans cet espace.
 
-[La structure et la fonction forward de notre CNN sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83)  
+[La structure et la fonction forward de notre CNN sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/3a82fa937aea2470b99d3cb1b9bf37ebedeb7dd9/CNN_model.py#L54-L82)  
 
 On utilisera finalement le réseau convolutionnel dans la version finale. La première version, présentée juste après utilisait encore le MLP.
 Les classes à reconnaitre sont :

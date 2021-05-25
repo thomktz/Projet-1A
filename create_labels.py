@@ -1,3 +1,5 @@
+### OLD FILE, USELESS NOW
+
 import pandas as pd
 
 sequence = ["a", "sigma", "forall", "thereex", "integral", "real", "in", "comma","a", "sigma", "forall", "thereex", "integral", "real", "in", "comma"]
