@@ -6,7 +6,7 @@ Thomas KIENTZ
 Pierre ROUILLARD  
 
 
-<img src="https://user-images.githubusercontent.com/60552083/119563408-cbb8b500-bda7-11eb-8b11-c94cd89e7226.png" alt="alt text" width="500" height="500">
+<img src="https://user-images.githubusercontent.com/60552083/119563408-cbb8b500-bda7-11eb-8b11-c94cd89e7226.png" alt="alt text" width="400" height="400">
 
 
 # L'idée
