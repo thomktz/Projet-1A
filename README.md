@@ -63,7 +63,7 @@ characters = ["a",
 Dans cette idée d'*Object Detection*, il nous faut d'abord proposer des "boites" (*bounding boxes*) qui peuvent contenir des caractères pour ensuite classifier ce que l'on detecte. On applique pour cela la `SelectiveSearchSegmentation` de `OpenCV`.
 Ainsi à partir de notre formule de base :
 ![batch2](https://github.com/PierreRlld/pORJ/blob/main/formule.jpg)
-On obtient, dans ![ce notebook](Version_1 (Selective search).ipynb) :
+On obtient, dans [ce notebook](https://github.com/thomktz/Projet-1A/blob/0ceee86e52f29779da767fae25ca12f78a6223f8/Version_1%20(Selective%20search).ipynb) :
 ![batch3](https://github.com/PierreRlld/pORJ/blob/main/formule%20SS.png)
 On remarque cependant d'innombrables boxes se superposant sur un même caractère. L'objectif est d'en réduire le nombre le plus possible.
 On va donc pour cela implémenter la méthode *NMS* pour `Non Maximum Suppression`.
