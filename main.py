@@ -74,6 +74,9 @@ min_x = np.inf
 max_x = -np.inf
 
 def distance_from_rect(rect, p):
+    """
+    N'est plus utilisé dans la version finale
+    """
     x,y = p
     min_y, max_y, min_x, max_x = rect
     dx = max(min_x - x, 0, x - max_x)
@@ -153,13 +156,21 @@ def move_drawing(screen, margin = radius):
     pygame.display.flip()
 
 def draw_latex(screen, symbols):
-    string = "".join(list_str(symbols))
-    pygameSurface = pilImageToSurface(latex_to_img(string))
-    screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
-    pygame.display.flip()
-    reset_extremums()
+    if symbols != []:
+        string = "".join(list_str(symbols))
+        pygameSurface = pilImageToSurface(latex_to_img(string))
+        screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+        pygame.display.flip()
+        reset_extremums()
+    else:
+        pygame.draw.rect(screen, "white", pygame.Rect(draw_limit+3, title_size+3, window_width-draw_limit, window_height-title_size))
+        pygame.display.flip()
+        reset_extremums()
 
 def merge_squares(s1, s2):
+    """
+    N'est plus utilisé dans la version finale
+    """
     min_y1, max_y1, min_x1, max_x1 = s1
     min_y2, max_y2, min_x2, max_x2 = s2
     return [min(min_y1, min_y2), max(max_y1, max_y2), min(min_x1, min_x2), max(max_x1, max_x2)]
@@ -257,17 +268,11 @@ if __name__ == '__main__':
             if e.type == pygame.QUIT:
                 raise StopIteration
             elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
-                if  (has_drawn or draw_on)and distance_from_rect([min_y, max_y, min_x, max_x], e.pos)> distance_threshold:
-                    print("distance threshold")
-                    arg = predict_screen(screen, predict, print_pred = False)
-                    detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
-                    #print(detected.base_character)
-                else:
-                    has_drawn = False
-                    update_extremums(e)
-                    pygame.draw.circle(screen, color, e.pos, radius)
-                    pygame.display.flip()
-                    draw_on = True
+                has_drawn = False
+                update_extremums(e)
+                pygame.draw.circle(screen, color, e.pos, radius)
+                pygame.display.flip()
+                draw_on = True
             elif e.type == pygame.MOUSEBUTTONUP:
                 has_drawn = True
                 end_time = time.time()
