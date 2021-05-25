@@ -6,6 +6,7 @@ from image_treatment import padding, scaling
 import pickle
 from latex_2_img import latex_to_img
 from CNN_model import load_model
+import cv2
 import time
 import torch
 
@@ -85,8 +86,13 @@ def distance_from_rect(rect, p):
 
 
 def pilImageToSurface(pilImage):
-    return pygame.image.fromstring(
-        pilImage.tobytes(), pilImage.size, pilImage.mode).convert()
+    image = 255- np.array(pilImage)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #print(image.shape, image[1])
+    x, y, w, h = cv2.boundingRect(image)
+    newImg = np.swapaxes((255-image[y:y+h, x:x+w]),0,1)
+
+    return pygame.surfarray.make_surface(newImg)
 
 def draw_line(srf, color, start, end):
     dx = end[0]-start[0]
@@ -159,8 +165,13 @@ def draw_latex(screen, symbols):
     #print("Starting rendering", time.time())
     if symbols != []:
         string = "".join(list_str(symbols))
-        pygameSurface = pilImageToSurface(latex_to_img(string))
-        screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+        image = latex_to_img(string)
+        pygameSurface = pilImageToSurface(image)
+        #print(pygameSurface, pygameSurface.get_rect(), image.size)
+        a,b,c,d = pygameSurface.get_rect()
+        #print(((window_width+draw_limit)//2-c//2, (window_height+title_size)//2-d//2,c,d))
+        #screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+        screen.blit(pygameSurface, ((window_width+draw_limit)//2-c//2, (window_height+title_size)//2-d//2,c,d))
         pygame.display.flip()
         reset_extremums()
     else:

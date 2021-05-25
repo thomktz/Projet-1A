@@ -2,8 +2,8 @@
 # %%
 import matplotlib.pyplot as plt
 import io
+from PIL import Image, ImageOps, ImageChops
 import numpy as np
-from PIL import Image, ImageChops
 
 
 white = (255, 255, 255, 255)
@@ -24,9 +24,7 @@ def latex_to_img(tex):
     plt.close()
 
     im = Image.open(buf)
-    bbox = im.getbbox()
-
-    return im.crop(bbox)
+    return im
 
     
 # %%
