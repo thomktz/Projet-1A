@@ -145,7 +145,29 @@ def list_str(list):
 ```
 Cette structure en "arbres" (`Symbol` ~ `Noeud(caractère, exposants, indices)` avec `exposants` et `indices` des Noeuds) permet d'ajouter et de retirer des exposants et les indices dans l'odre qu'on le souhaite, très facilement. Pour sortir le `string` LaTeX, il suffit d'appeler `str(symbol)` qui appelle recursivement `str(exposants[i])` et `str(indices[i])` pour tout i et reconstruit le string final. On se contente pour cette version d'une hauteur de l'arbre de 1, i.e. racine et une feuille de chaque coté car il est difficile de savoir si un symbole est un indice d'un exposant, un exposant d'un indice ou un symbole normal à la hauteur 0.  
 
-Cette classe règle le problèmre numéro 2, et rend le code un peu plus lisible.
+![186546175_804711137147772_5325915247756031820_n](https://user-images.githubusercontent.com/60552083/119552830-429b8100-bd9b-11eb-8217-7f3fe9f7c03e.jpg)
+
+On définit alors un exposant comme un symbole dont la position moyenne en `y` est telle que `y < symbols[-1].y - min_dist` et un indice `y > symbols[-1].y + min_dist`. (Dans `pygame`, le coin (0,0) est en **haut** à gauche). `symbols` est la liste des symboles de hauteur `0`  
+
+Déterminons la complexité d'un appel de `str(symbol)` :
+
+Soit `symbol` un objet de la classe `Symbol`, de hauteur `n`
+
+```python
+C_n = C(str(symbol)) = O(1) + sum( [ C(str(symbol.exposants[i])) for i in range(len(symbol.exposants)) ] )
+                            + sum( [ C(str(symbol.indices[i])) for i in range(len(symbol.indices)) ] )
+```
+Or, 
+```python
+sum( [ C(str(symbol.exposants[i])) for i in range(len(symbol.exposants)) ] ) = O(len(symbol.exposants)) * C_(n-1)
+
+sum( [ C(str(symbol.indices[i])) for i in range(len(symbol.indices)) ] ) = O(len(symbol.indices)) * C_(n-1)
+```
+D'où, en notant `m` le nombre moyen d'indices et d'exposants,
+
+![batch4](https://github.com/PierreRlld/pORJ/blob/main/complexite.png)
+
+Cette classe règle le problème numéro 2, et rend le code un peu plus lisible.
 
 Pour règler le numéro 3, c'est maintenant un peu plus simple : Si `symbol.hauteur == 0`, il est balayé vers la gauche jusqu'au bord de l'écran. Sinon, rien ne bouge
 
@@ -173,6 +195,12 @@ Alors nous avons créé un programme qui fait l'inverse de `main.py`, c'est à d
 
 Il y a en réalité un temps assez long entre la fin du dessin et l'affichage LaTeX, de l'ordre de *2 à 3s*. Il y a les *0.7s* d'attente pour savoir si c'est bien la fin du caractère, puis *2s* d'attente. L'entiereté de ce temps (entre *98%* et *99%*) est passée à compiler et à afficher le code LaTeX, car la detection dure en moyenne *0.02s*
 
-Pour génerer des images LaTeX, on utilise `matplotlib`. Toutes les autres alternatives qui ont été essayées n'ont pas marché sur nos machines, malgré plusieurs installations de LaTeX, beaucoup de packages python et de documentations obscures. Vu le nombre limité de caractères, il serait probablement plus rapide de recoder un LaTeX simpliste en python qui peut lire du code et sortir une image.
+Pour génerer des images LaTeX, on utilise `matplotlib`. Toutes les autres alternatives qui ont été essayées n'ont pas marché sur nos machines, malgré plusieurs installations de LaTeX, beaucoup de packages python et de documentations obscures. Vu le nombre limité de caractères, il serait probablement plus rapide de recoder un LaTeX simpliste en python qui peut lire du code et sortir une image. C'est le point sur lequel nous avons le plus perdu de temps, sans succès. Enormément de solutions semblent uniquement marcher sur Linux ou comptent sur des executables introuvables ou ininstallables sous Windows (pnglatex, tex2pix, latex2png, ...)
 
 # Instructions pour le code
+
+Pour executer `main.py`, il faut s'assurer d'avoir `pygame` d'installé, ainsi que `torch`, `sklearn`, quelques autre libraries standards et d'avoir `cuda` et un GPU. Il est possible de faire tourner le code sans GPU mais il faudra modifier quelques lignes dans `main.py` et dans `CNN_model.py`.
+
+Ensuite, executer `main.py` devrait immédiatement ouvrir la fenêtre `pygame`.
+
+
