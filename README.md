@@ -25,7 +25,7 @@ Il faut, pour detecter des objets, pouvoir reconnaitre les objets. Pour cela, no
 
 Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet de savoir quels points (pixels, ici) sont proches de quels autres dans cet espace. Dérouler les pixels à la suite et les passer dans un réseau *fully-connected* est alors une grosse perte d'information.
 
-https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83
+[https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83](La structure et la fonction forward sont définis dans ces lignes`)
 
 # La première version
 
