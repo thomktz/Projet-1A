@@ -149,6 +149,21 @@ Cette structure en "arbres" (`Symbol` ~ `Noeud(caractère, exposants, indices)` 
 
 On définit alors un exposant comme un symbole dont la position moyenne en `y` est telle que `y < symbols[-1].y - min_dist` et un indice `y > symbols[-1].y + min_dist`. (Dans `pygame`, le coin (0,0) est en **haut** à gauche). `symbols` est la liste des symboles de hauteur `0`  
 
+Déterminons la complexité d'un appel de `str(symbol)` :
+
+Soit `symbol` un objet de la classe `Symbol`, de hauteur `n`
+
+```python
+C_n = C(str(symbol)) = O(1) + sum( [ C(str(symbol.exposants[i])) for i in range(len(symbol.exposants)) ] )
+                            + sum( [ C(str(symbol.indices[i])) for i in range(len(symbol.indices)) ] )
+```
+Or, 
+```python
+sum( [ C(str(symbol.exposants[i])) for i in range(len(symbol.exposants)) ] ) = O(len(symbol.exposants)) * C_(n-1)
+
+sum( [ C(str(symbol.indices[i])) for i in range(len(symbol.indices)) ] ) = O(len(symbol.indices)) * C_(n-1)
+```
+
 Cette classe règle le problème numéro 2, et rend le code un peu plus lisible.
 
 Pour règler le numéro 3, c'est maintenant un peu plus simple : Si `symbol.hauteur == 0`, il est balayé vers la gauche jusqu'au bord de l'écran. Sinon, rien ne bouge
