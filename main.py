@@ -57,7 +57,9 @@ class Symbol():
                 return self.base_character + "^{" + "".join(list_str(self.exposants)) + "}"
             else:
                 return self.base_character
-                
+
+
+# %%
 
 window_width = 900
 window_height = 500
@@ -306,6 +308,7 @@ if __name__ == '__main__':
                 delete_last_symbol(screen, latex)
                 
     except StopIteration:
+        
         pygame.display.quit()
         pygame.quit()
         pass
