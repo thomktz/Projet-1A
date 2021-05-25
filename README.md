@@ -145,7 +145,9 @@ def list_str(list):
 ```
 Cette structure en "arbres" (`Symbol` ~ `Noeud(caractère, exposants, indices)` avec `exposants` et `indices` des Noeuds) permet d'ajouter et de retirer des exposants et les indices dans l'odre qu'on le souhaite, très facilement. Pour sortir le `string` LaTeX, il suffit d'appeler `str(symbol)` qui appelle recursivement `str(exposants[i])` et `str(indices[i])` pour tout i et reconstruit le string final. On se contente pour cette version d'une hauteur de l'arbre de 1, i.e. racine et une feuille de chaque coté car il est difficile de savoir si un symbole est un indice d'un exposant, un exposant d'un indice ou un symbole normal à la hauteur 0.  
 
-![189381466_1378230632561807_5581225223239947287_n](https://user-images.githubusercontent.com/60552083/119552220-c1dc8500-bd9a-11eb-8fb7-76bc8fa29914.jpg)
+![186546175_804711137147772_5325915247756031820_n](https://user-images.githubusercontent.com/60552083/119552830-429b8100-bd9b-11eb-8217-7f3fe9f7c03e.jpg)
+
+On définit alors un exposant comme un symbole dont la position moyenne en `y` est telle que `y < symbols[-1].y - min_dist` et un indice `y > symbols[-1].y + min_dist`. (Dans `pygame`, le coin (0,0) est en **haut** à gauche). `symbols` est la liste des symboles de hauteur `0`  
 
 Cette classe règle le problème numéro 2, et rend le code un peu plus lisible.
 
