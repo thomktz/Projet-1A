@@ -163,7 +163,13 @@ sum( [ C(str(symbol.exposants[i])) for i in range(len(symbol.exposants)) ] ) = O
 
 sum( [ C(str(symbol.indices[i])) for i in range(len(symbol.indices)) ] ) = O(len(symbol.indices)) * C_(n-1)
 ```
+D'où, en notant `m` le nombre moyen d'indices et d'exposants,
 
+```python
+C_n = O(2m) * C_(n-1) + O(1)
+    = O((2m) ^ n) * C_0 + O(n)
+    = O((2m) ^ n) + O(n)
+```
 Cette classe règle le problème numéro 2, et rend le code un peu plus lisible.
 
 Pour règler le numéro 3, c'est maintenant un peu plus simple : Si `symbol.hauteur == 0`, il est balayé vers la gauche jusqu'au bord de l'écran. Sinon, rien ne bouge
