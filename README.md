@@ -32,6 +32,24 @@ Le réseau neuronal convolutionnel est grandement utilisé pour tout type de don
 [La structure et la fonction forward de notre CNN sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83)  
 
 On utilisera finalement le réseau convolutionnel dans la version finale. La première version, présentée juste après utilisait encore le MLP.
+Les classes à reconnaitre sont :
+
+```python
+characters = ["a",
+              "\sum ",
+              "\\forall ",
+              "\exists ",
+              "\int ",
+              "\mathbb{R}",
+              "\in ",
+              ",",
+              "x",
+              "\geq ",
+              "\leq ",
+              "=",
+              "i",
+              "n"]
+```
 
 
 # La première version
@@ -62,7 +80,7 @@ On obtient alors en sortie :
 
 Le résultat est loin d'être parfait, et necessite d'écrire sur une tablette pour avoir une photo assez nette et pour avoir toujours la même epaisseur de trait. Une simple capture d'écran d'une tablette après avoir écrit est inefficace car on exploite pas le fait d'avoir l'évolution du tracé.
 
-# La deuxième version
+# La deuxième version (`old_main.py`)
 
 L'idée phare de cette nouvelle version est l'exploitation du mouvement de la souris (ou du stylet de la tablette) pour detecter les *bounding boxes*. Il faut donc une interface graphique sur laquelle on peut dessiner. La partie graphique du projet est assurée par `pygame` et `matplotlib`.
 Pour creer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
@@ -82,5 +100,46 @@ En animation, et en prenant compte de la taille du trait :
 
 ![bounding_boxes](https://user-images.githubusercontent.com/60552083/119487647-f2e89580-bd59-11eb-9da9-c8b5d6dba21d.gif)
 
+Pour valider la selection, il suffit d'appuyer sur *Entrée* et, en fonction de la valeur de `latex` (`True` ou `False`), le programme interprête le dessin et montre la prédiction sous forme de code LaTeX ou comme image compilée de code LaTeX. Si le symbole est en indice ou en exposant (selon une distance des centres par rapport au dernier), alors le dernier reste à l'écran, sinon l'écran est réinitialisé.
 
+Les problèmes de cette version sont :
+- Il faut appuyer sur *Entrée* entre chaque caractère
+- la façon dont le code latex est géré (à l'aide d'un `string` temporaire, un `string` final et un dictionnaire des exposants et indices pour les caractères "spéciaux", qui sont dans une liste à part) est très sale, limitée et rend le code illisible, impossible à améliorer et à développer.
+- La façon dont le dessin reste ou disparait de l'écran n'est pas très naturelle
 
+# La version finale (`main.py`)
+
+Cette version tente de résoudre les problèmes mentionnés plus haut. La grande "innovation" de cette version est la classe `Symbol` :
+
+```python
+class Symbol():
+    def __init__(self, i, height, rect, parent = None):
+        miny, maxy, minx, maxx = rect
+        self.parent = parent
+        self.height = height         #-1 : indice, 0 : normal, 1 : exposant
+        self.y = (miny+maxy)//2
+        self.base_character = characters[i]
+        self.indices = []
+        self.exposants = []
+        self.rect = rect
+        self.last_addition = None
+    
+    def __str__(self):
+        if len(self.indices) > 0:
+            if len(self.exposants) > 0:
+                return self.base_character + "_{" + "".join(list_str(self.indices))+ "}^{" + "".join(list_str(self.exposants)) + "}"
+            else:
+                return self.base_character + "_{" + "".join(list_str(self.indices))+ "}"
+        else:
+            if len(self.exposants) > 0:
+                return self.base_character + "^{" + "".join(list_str(self.exposants)) + "}"
+            else:
+                return self.base_character
+```
+
+avec
+
+```python
+def list_str(list):
+    return [str(e) for e in list]
+```
