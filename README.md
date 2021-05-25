@@ -167,10 +167,15 @@ D'où, en notant `m` le nombre moyen d'indices et d'exposants,
 
 ```python
 C_n = O(2m) * C_(n-1) + O(1)
+
     = O(2m) * [O(2m) * C_(n-2) + O(1)] + O(1)
+    
     = O((2m) ^ 2) * C_(n-2) + O(2m) + O(1)
+    
     = O((2m) ^ n) * C_0 + sum( [ O((2m)^i) for i = 0, ... , n-1 ] )
+    
     = O((2m) ^ n) + O(( 1 - (2m) ^ n ) / ( 1 - 2m ))
+    
     = O( (1 - (2m) ^ (n+1)) / (1 - 2m) )
 ```
 Cette classe règle le problème numéro 2, et rend le code un peu plus lisible.
