@@ -86,6 +86,8 @@ if __name__ == '__main__':
 
     continuer = True
     nb_added = 0
+    recording = True
+    frames = 0
 
     try:
         init_window_draw(screen)
@@ -95,6 +97,9 @@ if __name__ == '__main__':
         pygame.display.flip()
         
         while continuer:
+            if recording:
+                pygame.image.save(screen, f"frames_draw/frame_{str(frames).zfill(4)}.jpeg")
+            frames += 1
             e = pygame.event.wait()
             if e.type == pygame.QUIT:
                 raise StopIteration
@@ -134,4 +139,24 @@ if __name__ == '__main__':
         pygame.display.quit()
         pygame.quit()
         pass
+# %%
+
+def create_video():
+    import cv2
+    import numpy as np
+    import glob
+    
+    img_array = []
+    for filename in glob.glob('frames_draw/*.jpeg'):
+        img = cv2.imread(filename)
+        height, width, layers = img.shape
+        size = (width,height)
+        img_array.append(img)
+    
+    
+    out = cv2.VideoWriter('draw_data.avi',cv2.VideoWriter_fourcc(*'DIVX'), 100, size)
+    
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
 # %%
