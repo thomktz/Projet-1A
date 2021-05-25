@@ -165,7 +165,7 @@ sum( [ C(str(symbol.indices[i])) for i in range(len(symbol.indices)) ] ) = O(len
 ```
 D'où, en notant `m` le nombre moyen d'indices et d'exposants,
 
-
+![batch5](https://github.com/PierreRlld/pORJ/blob/main/complexite.png)
 
 Cette classe règle le problème numéro 2, et rend le code un peu plus lisible.
 
