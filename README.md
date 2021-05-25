@@ -251,4 +251,6 @@ Pour executer `main.py`, il faut s'assurer d'avoir `pygame` d'installé, ainsi q
 
 Ensuite, executer `main.py` devrait immédiatement ouvrir la fenêtre `pygame`.
 
+Le code est rédigé sur *Visual Studio Code*, et utilise abondément la fonctionnalité de *Notebook* intégrée, grâce aux `# %%`.
+
 
