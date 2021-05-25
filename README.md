@@ -156,3 +156,8 @@ On utilise alors uniquement le premier.
 
 ![main](https://user-images.githubusercontent.com/60552083/119516823-5c2ad180-bd77-11eb-9172-6e9a1bd23307.gif)
 
+# La nouvelle base de données (`draw_data.py`)
+
+Le programme étant actuellement utilisé sur ordinateur avec une fonction bien précise qui genère les dessins toujours de la même façon, il y a une grande perte d'efficacité à ne pas avoir un dataset généré au même endroit, i.e. dans notre programme.
+
+Alors nous avons créé un programme qui fait l'inverse de `main.py`, c'est à dire qui nous montre un symbole et qui nous fait le dessiner. Tout est automatiquement enregistré à chaque ajout. Les symboles sont affichés au hasard pour ne pas écrire toujours les symboles de la même manière.
