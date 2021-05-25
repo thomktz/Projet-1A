@@ -43,6 +43,25 @@ On obtient alors en sortie :
 
 ![batch4](https://github.com/PierreRlld/pORJ/blob/main/r%C3%A9sultat.png)
 
+Le résultat est loin d'être parfait, et necessite d'écrire sur une tablette pour avoir une photo assez nette et pour avoir toujours la même epaisseur de trait. Une simple capture d'écran d'une tablette après avoir écrit est inefficace car on exploite pas le fait d'avoir l'évolution du tracé.
+
+## La deuxième version
+
+L'idée phare de cette nouvelle version est l'exploitation du mouvement de la souris (ou du stylet de la tablette) pour detecter les *bounding boxes*. Il faut donc une interface graphique sur laquelle on peut dessiner. La partie graphique du projet est assurée par `pygame` et `matplotlib`.
+Pour creer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
+
+```python
+if x > max_x:
+    max_x = x
+if x < min_x:
+    min_x = x
+if y > max_y:
+    max_y = y
+if y < min_y:
+    min_y = y
+```
+On ne peut pas remplacer un `if` par un `elif` pour gagner en rapidité car un trait monotone en x ou en y laissera un min ou un max à sa valeur initiale, qui est ±∞
+En animation, et en prenant compte de la taille du trait :
 
 
 
