@@ -3,11 +3,11 @@
 Thomas KIENTZ  
 Pierre ROUILLARD
 
-## L'idée
+# L'idée
 
 La première idée de projet vient du constat qu'il est fastidieux pour celui qui ne sait pas coder en LaTeX d'écrire des formules mathématiques sur ordinateur. Nous avions alors pensé à faire de l' *Object Detection* sur des images de formules mathématiques.
 
-## Les données
+# Les données
 
 Il a fallu trouver un Dataset qui n'avait pas trop de classes (pour du *proof of concept*) mais qui s'appliquait parfaitement à notre problematique. Nous avons alors créé notre propre Dataset à l'aide d'une tablette graphique pour dessiner des caractères mathématiques.
 
@@ -17,7 +17,17 @@ Puis, après traitement, les images sont mises dans un fichier `data.npy` et les
 
 ![batch_1](https://user-images.githubusercontent.com/60552083/119355798-f91d3a00-bca5-11eb-9807-62a75cd988cc.PNG)
 
-## La première version
+# Le classifier
+
+Il faut, pour detecter des objets, pouvoir reconnaitre les objets. Pour cela, nous avons essayé deux types de réseaux :
+
+### Réseau convolutionnel
+
+Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet de savoir quels points (pixels, ici) sont proches de quels autres dans cet espace. Dérouler les pixels à la suite et les passer dans un réseau *fully-connected* est alors une grosse perte d'information.
+
+[La structure et la fonction forward sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83)
+
+# La première version
 
 Dans cette idée d'*Object Detection*, il nous faut d'abord proposer des "boites" (*bounding boxes*) qui peuvent contenir des caractères pour ensuite classifier ce que l'on detecte. On applique pour cela la `SelectiveSearchSegmentation` de `OpenCV`.
 Ainsi à partir de notre formule de base :
@@ -43,6 +53,27 @@ On obtient alors en sortie :
 
 ![batch4](https://github.com/PierreRlld/pORJ/blob/main/r%C3%A9sultat.png)
 
+Le résultat est loin d'être parfait, et necessite d'écrire sur une tablette pour avoir une photo assez nette et pour avoir toujours la même epaisseur de trait. Une simple capture d'écran d'une tablette après avoir écrit est inefficace car on exploite pas le fait d'avoir l'évolution du tracé.
+
+# La deuxième version
+
+L'idée phare de cette nouvelle version est l'exploitation du mouvement de la souris (ou du stylet de la tablette) pour detecter les *bounding boxes*. Il faut donc une interface graphique sur laquelle on peut dessiner. La partie graphique du projet est assurée par `pygame` et `matplotlib`.
+Pour creer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
+
+```python
+if x > max_x:
+    max_x = x
+if x < min_x:
+    min_x = x
+if y > max_y:
+    max_y = y
+if y < min_y:
+    min_y = y
+```
+On ne peut pas remplacer un `if` par un `elif` pour gagner en rapidité car un trait monotone en x ou en y laissera un min ou un max à sa valeur initiale, qui est ±∞  
+En animation, et en prenant compte de la taille du trait :
+
+![bounding_boxes](https://user-images.githubusercontent.com/60552083/119487647-f2e89580-bd59-11eb-9da9-c8b5d6dba21d.gif)
 
 
 
