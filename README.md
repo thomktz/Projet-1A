@@ -154,3 +154,5 @@ Enfin, pour le problème numéro 1, deux critères ont été envisagés
 - Ensuite, la distance entre un nouveau trait et la fin de l'ancien. Si cette valeur dépasse une valeur fixée en pixels, alors on évalue automatiquement. Cette méthode à l'inconvénient de ne pas être compatible avec la nouvelle méthode qui règle le problème numéro 3.  
 On utilise alors uniquement le premier.
 
+![main](https://user-images.githubusercontent.com/60552083/119516823-5c2ad180-bd77-11eb-9172-6e9a1bd23307.gif)
+
