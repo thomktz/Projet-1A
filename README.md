@@ -253,4 +253,5 @@ Ensuite, executer `main.py` devrait immédiatement ouvrir la fenêtre `pygame`.
 
 Le code est rédigé sur *Visual Studio Code*, et utilise abondément la fonctionnalité de *Notebook* intégrée, grâce aux `# %%`.
 
+Le modèle entrainé reconnait très bien l'écriture de celui qui a fait le dataset, mais il faudra peut-être rajouter quelques points dans le dataset et fine-tuner pour reconnaitre une écriture différente
 
