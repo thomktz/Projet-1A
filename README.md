@@ -21,11 +21,36 @@ Puis, après traitement, les images sont mises dans un fichier `data.npy` et les
 
 Il faut, pour detecter des objets, pouvoir reconnaitre les objets. Pour cela, nous avons essayé deux types de réseaux :
 
+### Le MLP
+
+Le *MLP* (ou *Multi-Layer Perceptron*) est le réseau neuronal le plus classique possible : Il est uniquement constitué de couches de réseaux denses, et de fonctions d'activation. A l'aide de `sklearn`, on peut en entrainer un très simplement en quelques lignes, cf [sklearn_model.py](https://github.com/thomktz/Projet-1A/blob/main/sklearn_model.py)
+
 ### Réseau convolutionnel
 
-Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet de savoir quels points (pixels, ici) sont proches de quels autres dans cet espace. Dérouler les pixels à la suite et les passer dans un réseau *fully-connected* est alors une grosse perte d'information.
+Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet d'exploiter la structure, i.e. quels points (pixels, ici) sont proches de quels autres dans cet espace.
 
-[La structure et la fonction forward sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83)
+[La structure et la fonction forward de notre CNN sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83)  
+
+On utilisera finalement le réseau convolutionnel dans la version finale. La première version, présentée juste après utilisait encore le MLP.
+Les classes à reconnaitre sont :
+
+```python
+characters = ["a",
+              "\sum ",
+              "\\forall ",
+              "\exists ",
+              "\int ",
+              "\mathbb{R}",
+              "\in ",
+              ",",
+              "x",
+              "\geq ",
+              "\leq ",
+              "=",
+              "i",
+              "n"]
+```
+
 
 # La première version
 
@@ -55,7 +80,7 @@ On obtient alors en sortie :
 
 Le résultat est loin d'être parfait, et necessite d'écrire sur une tablette pour avoir une photo assez nette et pour avoir toujours la même epaisseur de trait. Une simple capture d'écran d'une tablette après avoir écrit est inefficace car on exploite pas le fait d'avoir l'évolution du tracé.
 
-# La deuxième version
+# La deuxième version (`old_main.py`)
 
 L'idée phare de cette nouvelle version est l'exploitation du mouvement de la souris (ou du stylet de la tablette) pour detecter les *bounding boxes*. Il faut donc une interface graphique sur laquelle on peut dessiner. La partie graphique du projet est assurée par `pygame` et `matplotlib`.
 Pour creer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
@@ -70,10 +95,52 @@ if y > max_y:
 if y < min_y:
     min_y = y
 ```
-On ne peut pas remplacer un `if` par un `elif` pour gagner en rapidité car un trait monotone en x ou en y laissera un min ou un max à sa valeur initiale, qui est ±∞  
+On ne peut pas remplacer un `if` par un `elif` pour gagner en rapidité car un trait strictement monotone en x ou en y laissera un min ou un max à sa valeur initiale, qui est ±∞  
 En animation, et en prenant compte de la taille du trait :
 
 ![bounding_boxes](https://user-images.githubusercontent.com/60552083/119487647-f2e89580-bd59-11eb-9da9-c8b5d6dba21d.gif)
 
+Pour valider la selection, il suffit d'appuyer sur *Entrée* et, en fonction de la valeur de `latex` (`True` ou `False`), le programme interprête le dessin et montre la prédiction sous forme de code LaTeX ou comme image compilée de code LaTeX. Si le symbole est en indice ou en exposant (selon une distance des centres par rapport au dernier), alors le dernier reste à l'écran, sinon l'écran est réinitialisé.
 
+Les problèmes de cette version sont :
+- Il faut appuyer sur *Entrée* entre chaque caractère
+- la façon dont le code latex est géré (à l'aide d'un `string` temporaire, un `string` final et un dictionnaire des exposants et indices pour les caractères "spéciaux", qui sont dans une liste à part) est très sale, limitée et rend le code illisible, impossible à améliorer et à développer.
+- La façon dont le dessin reste ou disparait de l'écran n'est pas très naturelle
 
+# La version finale (`main.py`)
+
+Cette version tente de résoudre les problèmes mentionnés plus haut. La grande "innovation" de cette version est la classe `Symbol` :
+
+```python
+class Symbol():
+    def __init__(self, i, height, rect, parent = None):
+        miny, maxy, minx, maxx = rect
+        self.parent = parent
+        self.height = height         #-1 : indice, 0 : normal, 1 : exposant
+        self.y = (miny+maxy)//2
+        self.base_character = characters[i]
+        self.indices = []
+        self.exposants = []
+        self.rect = rect
+        self.last_addition = None
+    
+    def __str__(self):
+        if len(self.indices) > 0:
+            if len(self.exposants) > 0:
+                return self.base_character + "_{" + "".join(list_str(self.indices))+ "}^{" + "".join(list_str(self.exposants)) + "}"
+            else:
+                return self.base_character + "_{" + "".join(list_str(self.indices))+ "}"
+        else:
+            if len(self.exposants) > 0:
+                return self.base_character + "^{" + "".join(list_str(self.exposants)) + "}"
+            else:
+                return self.base_character
+```
+
+avec
+
+```python
+def list_str(list):
+    return [str(e) for e in list]
+```
+Cette structure en "arbres" (`Symbol` ~ `Noeud(caractère, exposants, indices)` avec `exposants` et `indices` des Noeuds) permet d'ajouter et de retirer des exposants et les indices dans l'odre qu'on le souhaite, très facilement. Pour sortir le `string` LaTeX, il suffit d'appeler `str(symbol)` qui appelle recursivement `str(exposants[i])` et `str(indices[i])` pour tout i et reconstruit le string final. On se contente pour cette version d'une hauteur de l'arbre de 1, i.e. racine et une feuille de chaque coté car il est difficile de savoir si un symbole est un indice d'un exposant, un exposant d'un indice ou un symbole normal à la hauteur 0.  
