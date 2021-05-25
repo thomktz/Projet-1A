@@ -63,5 +63,5 @@ if y < min_y:
 On ne peut pas remplacer un `if` par un `elif` pour gagner en rapidité car un trait monotone en x ou en y laissera un min ou un max à sa valeur initiale, qui est ±∞
 En animation, et en prenant compte de la taille du trait :
 
-
+https://user-images.githubusercontent.com/60552083/119486686-d435cf00-bd58-11eb-919c-ef1501151abb.mp4
 
