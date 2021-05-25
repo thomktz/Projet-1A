@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
 On obtient le résultat suivant :
 
-![test_unit](https://user-images.githubusercontent.com/60552083/119561774-e427d000-bda5-11eb-9a7d-c336506bee85.PNG)
+![test_unit](https://user-images.githubusercontent.com/60552083/119562103-41bc1c80-bda6-11eb-8fd1-ef82b9089a45.PNG)
 
 # Instructions pour le code
 
