@@ -103,9 +103,9 @@ En animation, et en prenant compte de la taille du trait :
 Pour valider la selection, il suffit d'appuyer sur *Entrée* et, en fonction de la valeur de `latex` (`True` ou `False`), le programme interprête le dessin et montre la prédiction sous forme de code LaTeX ou comme image compilée de code LaTeX. Si le symbole est en indice ou en exposant (selon une distance des centres par rapport au dernier), alors le dernier reste à l'écran, sinon l'écran est réinitialisé.
 
 Les problèmes de cette version sont :
-- Il faut appuyer sur *Entrée* entre chaque caractère
-- la façon dont le code latex est géré (à l'aide d'un `string` temporaire, un `string` final et un dictionnaire des exposants et indices pour les caractères "spéciaux", qui sont dans une liste à part) est très sale, limitée et rend le code illisible, impossible à améliorer et à développer.
-- La façon dont le dessin reste ou disparait de l'écran n'est pas très naturelle
+1. Il faut appuyer sur *Entrée* entre chaque caractère
+2. la façon dont le code latex est géré (à l'aide d'un `string` temporaire, un `string` final et un dictionnaire des exposants et indices pour les caractères "spéciaux", qui sont dans une liste à part) est très sale, limitée et rend le code illisible, impossible à améliorer et à développer.
+3. La façon dont le dessin reste ou disparait de l'écran n'est pas très naturelle
 
 # La version finale (`main.py`)
 
@@ -144,3 +144,13 @@ def list_str(list):
     return [str(e) for e in list]
 ```
 Cette structure en "arbres" (`Symbol` ~ `Noeud(caractère, exposants, indices)` avec `exposants` et `indices` des Noeuds) permet d'ajouter et de retirer des exposants et les indices dans l'odre qu'on le souhaite, très facilement. Pour sortir le `string` LaTeX, il suffit d'appeler `str(symbol)` qui appelle recursivement `str(exposants[i])` et `str(indices[i])` pour tout i et reconstruit le string final. On se contente pour cette version d'une hauteur de l'arbre de 1, i.e. racine et une feuille de chaque coté car il est difficile de savoir si un symbole est un indice d'un exposant, un exposant d'un indice ou un symbole normal à la hauteur 0.  
+
+Cette classe règle le problèmre numéro 2, et rend le code un peu plus lisible.
+
+Pour règler le numéro 3, c'est maintenant un peu plus simple : Si `symbol.hauteur == 0`, il est balayé vers la gauche jusqu'au bord de l'écran. Sinon, rien ne bouge
+
+Enfin, pour le problème numéro 1, deux critères ont été envisagés
+- Premièrement, le temps entre deux traits. Si on dépasse une certaine valeur de différence de temps depuis notre dernier trait, on évalue automatiquement. Avec une souris, une valeur de *0,7s* est recommandée, avec un stylo et sur tablette on pourrait descendre à *0.5s*
+- Ensuite, la distance entre un nouveau trait et la fin de l'ancien. Si cette valeur dépasse une valeur fixée en pixels, alors on évalue automatiquement. Cette méthode à l'inconvénient de ne pas être compatible avec la nouvelle méthode qui règle le problème numéro 3.  
+On utilise alors uniquement le premier.
+
