@@ -27,9 +27,12 @@ Le *MLP* (ou *Multi-Layer Perceptron*) est le réseau neuronal le plus classique
 
 ### Réseau convolutionnel
 
-Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet de savoir quels points (pixels, ici) sont proches de quels autres dans cet espace. Dérouler les pixels à la suite et les passer dans un réseau *fully-connected* est alors une grosse perte d'information.
+Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet d'exploiter la structure, i.e. quels points (pixels, ici) sont proches de quels autres dans cet espace.
 
-[La structure et la fonction forward sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83)
+[La structure et la fonction forward de notre CNN sont définis dans ces lignes](https://github.com/thomktz/Projet-1A/blob/ffe490b3460205f07d11ebe2575f33fa40d3da9f/CNN_model.py#L56-L83)  
+
+On utilisera finalement le réseau convolutionnel dans la version finale. La première version, présentée juste après utilisait encore le MLP.
+
 
 # La première version
 
