@@ -220,7 +220,8 @@ def delete_last_symbol(screen, latex):
 if __name__ == '__main__':
 
     recording = True
-    latex = False
+    frames = 0
+    latex = True
     model_type = "pytorch"
     predict = models[model_type]["predict"]
     pygame.init()
@@ -249,7 +250,9 @@ if __name__ == '__main__':
                 update_symbols(screen, detected, latex = latex)
                 #print(detected.base_character)
             
-            if recording
+            if recording:
+                pygame.image.save(screen, f"frames_main/frame_{str(frames).zfill(4)}.jpeg")
+            frames += 1
             e = pygame.event.wait()
             if e.type == pygame.QUIT:
                 raise StopIteration
@@ -285,3 +288,23 @@ if __name__ == '__main__':
         pygame.quit()
         pass
     # %%
+
+def create_video():
+    import cv2
+    import numpy as np
+    import glob
+    
+    img_array = []
+    for filename in glob.glob('frames_main/*.jpeg'):
+        img = cv2.imread(filename)
+        height, width, layers = img.shape
+        size = (width,height)
+        img_array.append(img)
+    
+    
+    out = cv2.VideoWriter('main.avi',cv2.VideoWriter_fourcc(*'DIVX'), 100, size)
+    
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+# %%
