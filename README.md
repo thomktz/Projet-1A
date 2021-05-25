@@ -21,6 +21,10 @@ Puis, après traitement, les images sont mises dans un fichier `data.npy` et les
 
 Il faut, pour detecter des objets, pouvoir reconnaitre les objets. Pour cela, nous avons essayé deux types de réseaux :
 
+### Le MLP
+
+Le *MLP* (ou *Multi-Layer Perceptron*) est le réseau neuronal le plus classique possible : Il est uniquement constitué de couches de réseaux denses, et de fonctions d'activation. A l'aide de `sklearn`, on peut en entrainer un très simplement en quelques lignes, cf [sklearn_model.py](https://github.com/thomktz/Projet-1A/blob/main/sklearn_model.py)
+
 ### Réseau convolutionnel
 
 Le réseau neuronal convolutionnel est grandement utilisé pour tout type de données 2D (ou plus) car il permet de savoir quels points (pixels, ici) sont proches de quels autres dans cet espace. Dérouler les pixels à la suite et les passer dans un réseau *fully-connected* est alors une grosse perte d'information.
