@@ -5,7 +5,15 @@ import numpy as np
 from image_treatment import padding, scaling
 import pickle
 from latex_2_img import latex_to_img
+from CNN_model import load_model
 import time
+import torch
+
+models = {"sklearn" : {"model" :pickle.load(open("models/sklearn_MLP.pkl", "rb"))}
+          ,"pytorch" :  {"model" : load_model("models/CNN_1.pth")}}
+
+models["sklearn"]["predict"] = lambda x : models["sklearn"]["model"].predict_proba(x.reshape((1,-1)))
+models["pytorch"]["predict"] = lambda x : models["pytorch"]["model"](torch.Tensor(x).unsqueeze(0)).detach().numpy()[0]
 
 characters = ["a",
               "\sum ",
@@ -121,13 +129,18 @@ def init_window(screen, flush, reset_extrems = True):
         reset_extremums()
     pygame.display.flip()
     
-def predict_screen(screen, print_pred = False):
+
+def predict_screen(screen,predict, debug = False):
     global min_y, max_y, min_x, max_x
+    if debug:
+        start = time.time()
     array = 255-pygame.surfarray.array3d(screen)[min_x-radius:max_x+radius, min_y-radius:max_y+radius].swapaxes(0,1)
     transformed = padding(scaling([array]))
-    pred = model.predict_proba(transformed.reshape((1,-1)))
-    if print_pred:
-        print(pred)
+    #print(type(transformed), transformed.shape)
+    pred = predict(transformed)
+    if debug:
+        print("prediction : ",pred)
+        print("temps pour prédire : ", time.time()-start)
     arg = np.argmax(pred)
     return arg
     
@@ -206,11 +219,10 @@ def delete_last_symbol(screen, latex):
 
 if __name__ == '__main__':
 
-    model = pickle.load(open("models/sklearn_MLP.pkl", "rb"))
-
-    
-    
-    latex = True
+    recording = True
+    latex = False
+    model_type = "pytorch"
+    predict = models[model_type]["predict"]
     pygame.init()
     screen = pygame.display.set_mode((window_width,window_height))
     screen.fill("white")
@@ -232,18 +244,19 @@ if __name__ == '__main__':
             if has_drawn and time.time() - end_time > time_threshold:
                 has_drawn = False
                 #print(time.time() - end_time, time_threshold)
-                arg = predict_screen(screen, print_pred = False)
+                arg = predict_screen(screen, predict, debug = False)
                 detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
                 update_symbols(screen, detected, latex = latex)
                 #print(detected.base_character)
-                
+            
+            if recording
             e = pygame.event.wait()
             if e.type == pygame.QUIT:
                 raise StopIteration
             elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
                 if  (has_drawn or draw_on)and distance_from_rect([min_y, max_y, min_x, max_x], e.pos)> distance_threshold:
                     print("distance threshold")
-                    arg = predict_screen(screen, print_pred = False)
+                    arg = predict_screen(screen, predict, print_pred = False)
                     detected = Symbol(arg, None, [min_y, max_y, min_x, max_x])
                     #print(detected.base_character)
                 else:

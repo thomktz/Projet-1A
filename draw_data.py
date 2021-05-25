@@ -1,5 +1,5 @@
 # %%
-from main_v3 import *
+from main import *
 import random
 
 # Si premier lancement :
@@ -11,8 +11,8 @@ data = np.load("data/data.npy")
 labels = np.load("data/labels.npy")
 
 
-#indexes_to_draw = [i for i in range(14)]
-indexes_to_draw = [0,13]
+indexes_to_draw = [i for i in range(14)]
+#indexes_to_draw = [0,13]
 characters_to_draw = [characters[i] for i in indexes_to_draw]
 
 min_y = np.inf
@@ -120,7 +120,6 @@ if __name__ == '__main__':
                     rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
                     draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)])
                 else:
-                    print(nb_added)
                     nb_added =+1
                     update_db(extract_symbol(screen), rd)
                     init_window_draw(screen)

@@ -9,28 +9,27 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import numpy as np
-import pickle
+from sklearn import metrics
 
-# %%
+
 chars = np.load('data/data.npy')
 labels = np.load('data/labels.npy')
 device = torch.device("cuda")
 data = torch.Tensor(chars).unsqueeze(1)
 labels = torch.Tensor(labels).to(dtype = torch.long)
-# %%
+
 
 n_classes = max(labels).item() + 1
 batch_size = 32
 num_workers = 0
 
-# %%
 
 #_, axes = plt.subplots(nrows=1, ncols=5, figsize=(35, 5))
 #for ax, image, label in zip(axes, chars, labels):
 #    ax.set_axis_off()
 #    ax.imshow(image, cmap=plt.cm.gray_r, interpolation='nearest')
 #    ax.set_title(f'Char n° {label}')
-#%%
+
 
 class MathsDataset(Dataset):
     def __init__(self, X, Y):
@@ -82,7 +81,6 @@ class Classifier(nn.Module):
         x = self.fc2(x)
         return F.sigmoid(x)
 
-# %%
 
 def weights_init_normal(m):
     classname = m.__class__.__name__
@@ -97,9 +95,9 @@ def weights_init_normal(m):
 model = Classifier()
 model.apply(weights_init_normal)
 model = model.to(device)
-# %%
+
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 losses = {'train':[], 'test':[]}
 
@@ -139,6 +137,20 @@ def train(n_epochs, save_path):
             torch.save(model.state_dict(), save_path)
             test_loss_min = test_loss
     return model         
+
+def load_model(path):
+    model = Classifier()
+    model.load_state_dict(torch.load(path))
+    model.eval()
+    return model
+
+def model_accuracy(model):
+    predicted = torch.argmax(model(data.to(device)), dim = 1).cpu().numpy()
+    print(f"Classification report for classifier {model}:\n"
+      f"{metrics.classification_report(labels, predicted)}\n")
 # %%
 
+#train(200,'models/CNN_1.pth')
+model = load_model("models/CNN_1.pth")
+#model_accuracy(model)
 # %%
