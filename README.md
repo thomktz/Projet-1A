@@ -89,7 +89,7 @@ Le résultat est loin d'être parfait, et necessite d'écrire sur une tablette p
 # La deuxième version (`old_main.py`)
 
 L'idée phare de cette nouvelle version est l'exploitation du mouvement de la souris (ou du stylet de la tablette) pour detecter les *bounding boxes*. Il faut donc une interface graphique sur laquelle on peut dessiner. La partie graphique du projet est assurée par `pygame` et `matplotlib`.
-Pour creer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
+Pour créer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
 
 ```python
 if x > max_x:
@@ -254,4 +254,3 @@ Ensuite, executer `main.py` devrait immédiatement ouvrir la fenêtre `pygame`.
 Le code est rédigé sur *Visual Studio Code*, et utilise abondément la fonctionnalité de *Notebook* intégrée, grâce aux `# %%`.
 
 Le modèle entrainé reconnait très bien l'écriture de celui qui a fait le dataset, mais il faudra peut-être rajouter quelques points dans le dataset et fine-tuner pour reconnaitre une écriture différente
-
