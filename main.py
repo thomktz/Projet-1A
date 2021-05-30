@@ -59,7 +59,7 @@ class Symbol():
                 return self.base_character
 
 
-# %%
+
 
 window_width = 900
 window_height = 500
@@ -165,6 +165,7 @@ def move_drawing(screen, margin = radius):
 
 def draw_latex(screen, symbols):
     #print("Starting rendering", time.time())
+    
     if symbols != []:
         string = "".join(list_str(symbols))
         image = latex_to_img(string)
@@ -173,6 +174,7 @@ def draw_latex(screen, symbols):
         a,b,c,d = pygameSurface.get_rect()
         #print(((window_width+draw_limit)//2-c//2, (window_height+title_size)//2-d//2,c,d))
         #screen.blit(pygameSurface, pygameSurface.get_rect(center = ((draw_limit+window_width)//2, window_height//2)))
+        pygame.draw.rect(screen, "white", pygame.Rect(draw_limit+3, title_size+3, window_width-draw_limit, window_height-title_size))
         screen.blit(pygameSurface, ((window_width+draw_limit)//2-c//2, (window_height+title_size)//2-d//2,c,d))
         pygame.display.flip()
         reset_extremums()
@@ -180,6 +182,11 @@ def draw_latex(screen, symbols):
         pygame.draw.rect(screen, "white", pygame.Rect(draw_limit+3, title_size+3, window_width-draw_limit, window_height-title_size))
         pygame.display.flip()
         reset_extremums()
+        
+    textsurface = myfont.render('Status : Done', True, "red")
+    tx, ty = myfont.size("Status : Done...")
+    screen.blit(textsurface, (window_width-tx-10, title_size+ty//2))
+    pygame.display.flip()
     #print("Done", time.time())
 
 def merge_squares(s1, s2):
@@ -212,6 +219,11 @@ def update_symbols(screen, detected, latex = True):
     if latex:
         #print("Drawing...")
         #print("".join(list_str(symbols)))
+        textsurface = myfont.render('Status : Drawing '+ detected.base_character, True, "red")
+        tx, ty = myfont.size('Status : Drawing '+ detected.base_character)
+        pygame.draw.rect(screen, "white", pygame.Rect(draw_limit+3, title_size+3, window_width-draw_limit, title_size))
+        screen.blit(textsurface, (window_width-tx-10, title_size+ty//2))
+        pygame.display.flip()
         draw_latex(screen, symbols)
     else:
         out="".join(list_str(symbols))
@@ -283,30 +295,30 @@ if __name__ == '__main__':
             if recording:
                 pygame.image.save(screen, f"frames_main/frame_{str(frames).zfill(4)}.jpeg")
             frames += 1
-            e = pygame.event.wait()
-            if e.type == pygame.QUIT:
-                raise StopIteration
-            elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
-                has_drawn = False
-                update_extremums(e)
-                pygame.draw.circle(screen, color, e.pos, radius)
-                pygame.display.flip()
-                draw_on = True
-            elif e.type == pygame.MOUSEBUTTONUP:
-                has_drawn = True
-                end_time = time.time()
-                draw_on = False
-                
-            elif e.type == pygame.MOUSEMOTION:
-                if draw_on and e.pos[0] < draw_limit and e.pos[1] > title_size:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    raise StopIteration
+                elif e.type == pygame.MOUSEBUTTONDOWN and e.pos[0] < draw_limit:
+                    has_drawn = False
                     update_extremums(e)
                     pygame.draw.circle(screen, color, e.pos, radius)
-                    draw_line(screen, color, e.pos, last_pos)
                     pygame.display.flip()
-                last_pos = e.pos
-            elif e.type == pygame.KEYDOWN and e.key == pygame.K_BACKSPACE:
-                delete_last_symbol(screen, latex)
-                
+                    draw_on = True
+                elif e.type == pygame.MOUSEBUTTONUP:
+                    has_drawn = True
+                    end_time = time.time()
+                    draw_on = False
+                    
+                elif e.type == pygame.MOUSEMOTION:
+                    if draw_on and e.pos[0] < draw_limit and e.pos[1] > title_size:
+                        update_extremums(e)
+                        pygame.draw.circle(screen, color, e.pos, radius)
+                        draw_line(screen, color, e.pos, last_pos)
+                        pygame.display.flip()
+                    last_pos = e.pos
+                elif e.type == pygame.KEYDOWN and e.key == pygame.K_BACKSPACE:
+                    delete_last_symbol(screen, latex)
+                    
     except StopIteration:
         
         pygame.display.quit()
