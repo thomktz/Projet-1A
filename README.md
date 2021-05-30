@@ -15,7 +15,7 @@ La première idée de projet vient du constat qu'il est fastidieux pour celui qu
 
 # Les données
 
-Il a fallu trouver un Dataset qui n'avait pas trop de classes (pour du *proof of concept*) mais qui s'appliquait parfaitement à notre problematique. Nous avons alors créé notre propre Dataset à l'aide d'une tablette graphique pour dessiner des caractères mathématiques.
+Il a fallu trouver un Dataset qui n'avait pas trop de classes (pour du *proof of concept*) mais qui s'appliquait parfaitement à notre problèmatique. Nous avons alors créé notre propre Dataset à l'aide d'une tablette graphique pour dessiner des caractères mathématiques.
 
 ![batch_0](https://user-images.githubusercontent.com/60552083/119355651-d25f0380-bca5-11eb-9d8d-2c9ee0dec7c0.jpg)
 
@@ -63,7 +63,7 @@ characters = ["a",
 Dans cette idée d'*Object Detection*, il nous faut d'abord proposer des "boites" (*bounding boxes*) qui peuvent contenir des caractères pour ensuite classifier ce que l'on detecte. On applique pour cela la `SelectiveSearchSegmentation` de `OpenCV`.
 Ainsi à partir de notre formule de base :
 ![batch2](https://github.com/PierreRlld/pORJ/blob/main/formule.jpg)
-On obtient :
+On obtient, dans [ce notebook](https://github.com/thomktz/Projet-1A/blob/0ceee86e52f29779da767fae25ca12f78a6223f8/Version_1%20(Selective%20search).ipynb) :
 ![batch3](https://github.com/PierreRlld/pORJ/blob/main/formule%20SS.png)
 On remarque cependant d'innombrables boxes se superposant sur un même caractère. L'objectif est d'en réduire le nombre le plus possible.
 On va donc pour cela implémenter la méthode *NMS* pour `Non Maximum Suppression`.
@@ -89,7 +89,7 @@ Le résultat est loin d'être parfait, et necessite d'écrire sur une tablette p
 # La deuxième version (`old_main.py`)
 
 L'idée phare de cette nouvelle version est l'exploitation du mouvement de la souris (ou du stylet de la tablette) pour detecter les *bounding boxes*. Il faut donc une interface graphique sur laquelle on peut dessiner. La partie graphique du projet est assurée par `pygame` et `matplotlib`.
-Pour creer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
+Pour créer les *bounding boxes*, on applique à chaque mouvement de souris, quand le bouton est enfoncé, 
 
 ```python
 if x > max_x:
@@ -253,4 +253,4 @@ Ensuite, executer `main.py` devrait immédiatement ouvrir la fenêtre `pygame`.
 
 Le code est rédigé sur *Visual Studio Code*, et utilise abondément la fonctionnalité de *Notebook* intégrée, grâce aux `# %%`.
 
-
+Le modèle entrainé reconnait très bien l'écriture de celui qui a fait le dataset, mais il faudra peut-être rajouter quelques points dans le dataset et fine-tuner pour reconnaitre une écriture différente
