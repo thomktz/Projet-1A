@@ -244,6 +244,7 @@ def delete_last_symbol(screen, latex):
         symbols[-1].last_addition.pop(-1)
     else:
         symbols.pop(-1)
+        pygame.draw.rect(screen, "white", pygame.Rect(0, title_size+3, window_width-draw_limit-3, window_height-title_size))
     if latex:
         draw_latex(screen, symbols)
     else:
