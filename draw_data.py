@@ -1,4 +1,9 @@
+"""
+Programme qui permet l'ajout de points à la base de données. Il faut penser à modifier main.py si on ajoute des nouvelles classes, et à rentrainer le modèle.py
+Le code est très proche de celui de main.py et n'est donc pas commenté
+"""
 # %%
+
 from main import *
 import random
 
@@ -6,7 +11,7 @@ import random
 # data = np.empty((0,32,32))
 # labels = np.empty((0))
 
-
+# Sinon :
 data = np.load("data/data.npy")
 labels = np.load("data/labels.npy")
 
@@ -86,7 +91,7 @@ if __name__ == '__main__':
 
     continuer = True
     nb_added = 0
-    recording = True
+    recording = False
     frames = 0
 
     try:
@@ -123,18 +128,18 @@ if __name__ == '__main__':
                     init_window_draw(screen)
                     nb_added =+1
                     rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
-                    draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)])
+                    draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)], myfont)
                 else:
                     nb_added =+1
                     update_db(extract_symbol(screen), rd)
                     init_window_draw(screen)
                     rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
-                    draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)])
+                    draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)], myfont)
             elif e.type == pygame.KEYDOWN and e.key == pygame.K_BACKSPACE:
                 reset_extremums()
                 init_window_draw(screen)
                 rd = indexes_to_draw[random.randint(0,len(indexes_to_draw)-1)]
-                draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)])
+                draw_latex(screen, [Symbol(rd,0,[0,0,0,0],None)], myfont)
     except StopIteration:
         pygame.display.quit()
         pygame.quit()

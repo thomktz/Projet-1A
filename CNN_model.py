@@ -1,5 +1,4 @@
 # %%
-
 import torch
 #import torchvision.transforms as transforms
 import torch.optim as optim
@@ -16,22 +15,17 @@ chars = np.load('data/data.npy')
 labels = np.load('data/labels.npy')
 device = torch.device("cuda")
 data = torch.Tensor(chars).unsqueeze(1)
-labels = torch.Tensor(labels).to(dtype = torch.long)
+labels = torch.Tensor(labels).to(dtype = torch.long) # Pour éviter une erreur dans la loss
 
 
 n_classes = max(labels).item() + 1
 batch_size = 32
 num_workers = 0
 
-
-#_, axes = plt.subplots(nrows=1, ncols=5, figsize=(35, 5))
-#for ax, image, label in zip(axes, chars, labels):
-#    ax.set_axis_off()
-#    ax.imshow(image, cmap=plt.cm.gray_r, interpolation='nearest')
-#    ax.set_title(f'Char n° {label}')
-
-
 class MathsDataset(Dataset):
+    """
+    Pour utiliser pleinement le DataLoader de torch, il fallut transformer notre dataset en un Dataset de torch.utils.data
+    """
     def __init__(self, X, Y):
         self.images = X
         self.labels = Y
@@ -53,6 +47,10 @@ test_loader = DataLoader(MathsDataset(X_test, y_test), batch_size=batch_size, nu
 
 # %%
 class Classifier(nn.Module):
+    """
+    La classe du CNN.
+    La structure est inspirée d'un article, mais modifiée pour convenir à notre problème
+    """
     def __init__(self):
         super(Classifier, self).__init__()
         self.conv1 = nn.Conv2d(1, 16, 3, padding=1)
@@ -83,6 +81,9 @@ class Classifier(nn.Module):
 
 
 def weights_init_normal(m):
+    """
+    Initialise les poids selon une loi normale
+    """
     classname = m.__class__.__name__
     if classname.find('Linear') != -1:
         n = m.in_features
@@ -102,6 +103,9 @@ optimizer = optim.Adam(model.parameters(), lr=0.0001)
 losses = {'train':[], 'test':[]}
 
 def train(n_epochs, save_path):
+    """
+    Entraine le Classifier pendant n_epochs. Sauvegarde le modèle dès que sa test_loss diminue
+    """
     test_loss_min = np.inf
     for epoch in range(1, n_epochs+1):
         train_loss = 0.
@@ -139,12 +143,18 @@ def train(n_epochs, save_path):
     return model         
 
 def load_model(path):
+    """
+    Permet de charger un modèle depuis son fichier _.pth
+    """
     model = Classifier()
     model.load_state_dict(torch.load(path))
     model.eval()
     return model
 
 def model_accuracy(model):
+    """
+    Permet de donner l'accuracy du modèle. C'est une métrique assez difficile à obtenir directement avec pytorch. On utilise alors sklearn.
+    """
     predicted = torch.argmax(model(data.to(device)), dim = 1).cpu().numpy()
     print(f"Classification report for classifier {model}:\n"
       f"{metrics.classification_report(labels, predicted)}\n")

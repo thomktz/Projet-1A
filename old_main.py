@@ -1,3 +1,10 @@
+"""
+Code de la version 2 de notre programme (celle ou il faut appuyer sur Entrée à chaque fois)
+
+Le code est assez sale car les fonctionnalités apparaissent au fur et à mesure que les idées nous viennent, et s'ajoutent à la boucle principale.
+Beaucoup des choses qui se passent dans la boucle principale sont maintenant dans des fonctions à part dans la V3.
+La façon dont était geré le code LaTeX est aussi très sale et il devenait difficile de travailler sur ce programme.
+"""
 # %%
 import pygame
 import matplotlib.pyplot as plt
@@ -23,11 +30,17 @@ characters = ["a",
               "0",
               "1"]
 
-special = [1, 4]
+special = [1, 4] # Les caractères spéciaux (somme, intégrale) étaient gérés de manière séparée et étaient les seuls à pouvoir recevoir des indices et exposants
 
 
 
 def print_character(i, bounds, upper, exit, y):
+    """
+    Fonction qui renvoie le string LaTeX à partir de l'indice et du dictionnaire bounds.
+    Le cas ou c'est un caractère spécial est gèrè à part
+    
+    Cette fonction est remplacée par la classe Symbol bien plus élégante dans la V3 (finale) 
+    """
     global temp_str, tex_str, old_temp_str, old_tex_str
     old_temp_str = temp_str
     old_tex_str = tex_str
@@ -137,6 +150,9 @@ flush = True
 bounds = None
 
 try:
+    """
+    La boucle pricipale de cette ancienne version, très illisible (cf paragraphe du début du code).
+    """
     init_window(screen, flush)
     lastEvent = None
     while True:

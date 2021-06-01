@@ -1,3 +1,8 @@
+"""
+Pseudo code utilisé pour les screenshots du Powerpoint
+Ce programme ne fonctionnerait pas car Symbol attend 3 entrées et prend un indice, pas un string
+"""
+
 from main import Symbol, list_str
 
 

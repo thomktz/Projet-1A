@@ -1,3 +1,6 @@
+"""
+Ce programme sert à generer l'animation des bounding boxes du readme
+"""
 # %%
 import pygame
 import matplotlib.pyplot as plt
